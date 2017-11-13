@@ -121,14 +121,11 @@ $(document).ready(function () {
 
 <div id="data" class="section level3">
 <h3>Data</h3>
-<pre class="r"><code>class_roll &lt;- read.xlsx(&quot;../data/class_roll01.xlsx&quot;, 
-                        sheetIndex = 1, 
-                        startRow = 2, 
-                        endRow = 12, 
-                        colIndex = c(3:7, 9), 
-                        colClasses = rep(&quot;character&quot;, 6), 
-                        encoding = &quot;UTF-8&quot;, 
-                        stringsAsFactors = FALSE)
+<pre class="r"><code>class_roll &lt;- read.csv(&quot;../data/class_roll01.csv&quot;, 
+                       skip = 1,
+                       colClasses = rep(&quot;character&quot;, 6), 
+                       stringsAsFactors = FALSE)
+class_roll &lt;- class_roll[, -c(1:2, 8)]
 names(class_roll) &lt;- c(&quot;dept&quot;, &quot;id&quot;, &quot;name&quot;, &quot;year&quot;, &quot;e.mail&quot;, &quot;cell.no&quot;)</code></pre>
 </div>
 <div id="names" class="section level3">
@@ -140,9 +137,64 @@ not3.ind</code></pre>
 class_roll$name[not3.ind]</code></pre>
 <pre><code>## [1] &quot;한ㅇㅇ&quot;</code></pre>
 <pre class="r"><code>names.split &lt;- sapply(class_roll$name, function(x) unlist(strsplit(x, split = &quot;&quot;)))
-names.split[2:3, ] &lt;- rep(&quot;ㅇ&quot;, 2)
+kable(names.split[, 1:10])</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">강소현</th>
+<th align="left">김수빈</th>
+<th align="left">변아름</th>
+<th align="left">서강현</th>
+<th align="left">유현재</th>
+<th align="left">이민정</th>
+<th align="left">이준석</th>
+<th align="left">임일화</th>
+<th align="left">최남혁</th>
+<th align="left">한ㅇㅇ</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">강</td>
+<td align="left">김</td>
+<td align="left">변</td>
+<td align="left">서</td>
+<td align="left">유</td>
+<td align="left">이</td>
+<td align="left">이</td>
+<td align="left">임</td>
+<td align="left">최</td>
+<td align="left">한</td>
+</tr>
+<tr class="even">
+<td align="left">소</td>
+<td align="left">수</td>
+<td align="left">아</td>
+<td align="left">강</td>
+<td align="left">현</td>
+<td align="left">민</td>
+<td align="left">준</td>
+<td align="left">일</td>
+<td align="left">남</td>
+<td align="left">ㅇ</td>
+</tr>
+<tr class="odd">
+<td align="left">현</td>
+<td align="left">빈</td>
+<td align="left">름</td>
+<td align="left">현</td>
+<td align="left">재</td>
+<td align="left">정</td>
+<td align="left">석</td>
+<td align="left">화</td>
+<td align="left">혁</td>
+<td align="left">ㅇ</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>names.split[2:3, ] &lt;- rep(&quot;ㅇ&quot;, 2)
 class_roll$name &lt;- apply(names.split, 2, paste, collapse = &quot;&quot;)
-kable(head(class_roll))</code></pre>
+kable(class_roll)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -203,18 +255,84 @@ kable(head(class_roll))</code></pre>
 <td align="left"><a href="mailto:jeong9546@naver.com">jeong9546@naver.com</a></td>
 <td align="left">010-5104-9546</td>
 </tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20133429</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:olwnstjr@naver.com">olwnstjr@naver.com</a></td>
+<td align="left">010-9930-4716</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20123431</td>
+<td align="left">임ㅇㅇ</td>
+<td align="left">4</td>
+<td align="left"><a href="mailto:dladlfghk09@nate.com">dladlfghk09@nate.com</a></td>
+<td align="left">010-9916-2109</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20147303</td>
+<td align="left">최ㅇㅇ</td>
+<td align="left">4</td>
+<td align="left"></td>
+<td align="left">010-4010-1894</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163260</td>
+<td align="left">한ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:maddags@naver.com">maddags@naver.com</a></td>
+<td align="left">010-6237-3125</td>
+</tr>
 </tbody>
 </table>
 </div>
 <div id="cell-phone-numbers" class="section level3">
 <h3>Cell Phone Numbers</h3>
-<pre class="r"><code>cell.na &lt;- is.na(class_roll$cell.no)
+<pre class="r"><code>cell.na &lt;- class_roll$cell.no == &quot;&quot;
 class_roll$cell.no[cell.na] &lt;- &quot;NA-NA-NA&quot;
 cell.split &lt;- sapply(class_roll$cell.no, function(x) unlist(strsplit(x, split = &quot;-&quot;)))
-# cell.split
-cell.split[3, ] &lt;- &quot;xxxx&quot;
+kable(cell.split[, 1:5])</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">010-5532-4866</th>
+<th align="left">010-9145-4343</th>
+<th align="left">010-9317-9505</th>
+<th align="left">010-6307-9220</th>
+<th align="left">010-9111-3618</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">010</td>
+<td align="left">010</td>
+<td align="left">010</td>
+<td align="left">010</td>
+<td align="left">010</td>
+</tr>
+<tr class="even">
+<td align="left">5532</td>
+<td align="left">9145</td>
+<td align="left">9317</td>
+<td align="left">6307</td>
+<td align="left">9111</td>
+</tr>
+<tr class="odd">
+<td align="left">4866</td>
+<td align="left">4343</td>
+<td align="left">9505</td>
+<td align="left">9220</td>
+<td align="left">3618</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>cell.split[3, ] &lt;- &quot;xxxx&quot;
 class_roll$cell.no &lt;- apply(cell.split, 2, paste, collapse = &quot;-&quot;)
-kable(head(class_roll))</code></pre>
+kable(class_roll)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -275,16 +393,75 @@ kable(head(class_roll))</code></pre>
 <td align="left"><a href="mailto:jeong9546@naver.com">jeong9546@naver.com</a></td>
 <td align="left">010-5104-xxxx</td>
 </tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20133429</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:olwnstjr@naver.com">olwnstjr@naver.com</a></td>
+<td align="left">010-9930-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20123431</td>
+<td align="left">임ㅇㅇ</td>
+<td align="left">4</td>
+<td align="left"><a href="mailto:dladlfghk09@nate.com">dladlfghk09@nate.com</a></td>
+<td align="left">010-9916-xxxx</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20147303</td>
+<td align="left">최ㅇㅇ</td>
+<td align="left">4</td>
+<td align="left"></td>
+<td align="left">010-4010-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163260</td>
+<td align="left">한ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:maddags@naver.com">maddags@naver.com</a></td>
+<td align="left">010-6237-xxxx</td>
+</tr>
 </tbody>
 </table>
 </div>
 <div id="e-mail" class="section level3">
 <h3>e-mail</h3>
-<pre class="r"><code>e.mail.na &lt;- which(is.na(class_roll$e.mail))
+<pre class="r"><code>e.mail.na &lt;- class_roll$e.mail == &quot;&quot;
 class_roll$e.mail[e.mail.na] &lt;- &quot;NA@NA&quot;
 email.split &lt;- sapply(class_roll$e.mail, function(x) unlist(strsplit(x, split = &quot;@&quot;)))
-# email.split
-email.split[1, ] &lt;- &quot;user_name&quot;
+kable(email.split[, 1:5])</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"><a href="mailto:shkn0111@naver.com">shkn0111@naver.com</a></th>
+<th align="left"><a href="mailto:ksb3015@naver.com">ksb3015@naver.com</a></th>
+<th align="left"><a href="mailto:ahleum95@naver.com">ahleum95@naver.com</a></th>
+<th align="left"><a href="mailto:skh6294@naver.com">skh6294@naver.com</a></th>
+<th align="left"><a href="mailto:you087@nate.com">you087@nate.com</a></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">shkn0111</td>
+<td align="left">ksb3015</td>
+<td align="left">ahleum95</td>
+<td align="left">skh6294</td>
+<td align="left">you087</td>
+</tr>
+<tr class="even">
+<td align="left">naver.com</td>
+<td align="left">naver.com</td>
+<td align="left">naver.com</td>
+<td align="left">naver.com</td>
+<td align="left">nate.com</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>email.split[1, ] &lt;- &quot;user_name&quot;
 class_roll$e.mail &lt;- apply(email.split, 2, paste, collapse = &quot;@&quot;)
 kable(head(class_roll))</code></pre>
 <table>

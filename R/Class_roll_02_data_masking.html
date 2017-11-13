@@ -121,14 +121,11 @@ $(document).ready(function () {
 
 <div id="data" class="section level3">
 <h3>Data</h3>
-<pre class="r"><code>class_roll &lt;- read.xlsx(&quot;../data/class_roll02.xlsx&quot;, 
-                        sheetIndex = 1, 
-                        startRow = 2, 
-                        endRow = 41, 
-                        colIndex = c(3:7, 9), 
-                        colClasses = rep(&quot;character&quot;, 6), 
-                        encoding = &quot;UTF-8&quot;, 
-                        stringsAsFactors = FALSE)
+<pre class="r"><code>class_roll &lt;- read.csv(&quot;../data/class_roll02.csv&quot;, 
+                       skip = 1,
+                       colClasses = rep(&quot;character&quot;, 6), 
+                       stringsAsFactors = FALSE)
+class_roll &lt;- class_roll[, -c(1:2, 8)]
 names(class_roll) &lt;- c(&quot;dept&quot;, &quot;id&quot;, &quot;name&quot;, &quot;year&quot;, &quot;e.mail&quot;, &quot;cell.no&quot;)</code></pre>
 </div>
 <div id="names" class="section level3">
@@ -140,9 +137,64 @@ not3.ind</code></pre>
 class_roll$name[not3.ind]</code></pre>
 <pre><code>## character(0)</code></pre>
 <pre class="r"><code>names.split &lt;- sapply(class_roll$name, function(x) unlist(strsplit(x, split = &quot;&quot;)))
-names.split[2:3, ] &lt;- rep(&quot;ㅇ&quot;, 2)
+kable(names.split[, 1:10])</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">강민영</th>
+<th align="left">강주원</th>
+<th align="left">김규리</th>
+<th align="left">김나경</th>
+<th align="left">김다호</th>
+<th align="left">김슬기</th>
+<th align="left">김유진</th>
+<th align="left">김지연</th>
+<th align="left">김지연</th>
+<th align="left">김태수</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">강</td>
+<td align="left">강</td>
+<td align="left">김</td>
+<td align="left">김</td>
+<td align="left">김</td>
+<td align="left">김</td>
+<td align="left">김</td>
+<td align="left">김</td>
+<td align="left">김</td>
+<td align="left">김</td>
+</tr>
+<tr class="even">
+<td align="left">민</td>
+<td align="left">주</td>
+<td align="left">규</td>
+<td align="left">나</td>
+<td align="left">다</td>
+<td align="left">슬</td>
+<td align="left">유</td>
+<td align="left">지</td>
+<td align="left">지</td>
+<td align="left">태</td>
+</tr>
+<tr class="odd">
+<td align="left">영</td>
+<td align="left">원</td>
+<td align="left">리</td>
+<td align="left">경</td>
+<td align="left">호</td>
+<td align="left">기</td>
+<td align="left">진</td>
+<td align="left">연</td>
+<td align="left">연</td>
+<td align="left">수</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>names.split[2:3, ] &lt;- rep(&quot;ㅇ&quot;, 2)
 class_roll$name &lt;- apply(names.split, 2, paste, collapse = &quot;&quot;)
-kable(head(class_roll))</code></pre>
+kable(class_roll)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -203,18 +255,316 @@ kable(head(class_roll))</code></pre>
 <td align="left"><a href="mailto:sbe04071@naver.com">sbe04071@naver.com</a></td>
 <td align="left">010-8786-0575</td>
 </tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163206</td>
+<td align="left">김ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:kyjin0304@naver.com">kyjin0304@naver.com</a></td>
+<td align="left">010-5199-7498</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163208</td>
+<td align="left">김ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:jyk0365@naver.com">jyk0365@naver.com</a></td>
+<td align="left">010-6536-4041</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143404</td>
+<td align="left">김ㅇㅇ</td>
+<td align="left">4</td>
+<td align="left"><a href="mailto:rlawldus0914@naver.com">rlawldus0914@naver.com</a></td>
+<td align="left">010-4539-9475</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143405</td>
+<td align="left">김ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:thrujjang95@naver.com">thrujjang95@naver.com</a></td>
+<td align="left">010-9410-8490</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143407</td>
+<td align="left">김ㅇㅇ</td>
+<td align="left">4</td>
+<td align="left"><a href="mailto:hiek2001@naver.com">hiek2001@naver.com</a></td>
+<td align="left">010-9868-6627</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20153311</td>
+<td align="left">노ㅇㅇ</td>
+<td align="left">3</td>
+<td align="left"><a href="mailto:roks1996@naver.com">roks1996@naver.com</a></td>
+<td align="left">010-3039-6897</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163213</td>
+<td align="left">문ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:rkdus9205@naver.com">rkdus9205@naver.com</a></td>
+<td align="left">010-7113-0063</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143409</td>
+<td align="left">박ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:cksdud436@nate.com">cksdud436@nate.com</a></td>
+<td align="left">010-6354-6719</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163221</td>
+<td align="left">박ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:phjin3716@naver.com">phjin3716@naver.com</a></td>
+<td align="left">010-3009-3716</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143410</td>
+<td align="left">신ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:keke3943@nate.com">keke3943@nate.com</a></td>
+<td align="left">010-2074-3943</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163227</td>
+<td align="left">신ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:snl305@naver.com">snl305@naver.com</a></td>
+<td align="left">010-9308-8912</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163229</td>
+<td align="left">심ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:tlagpwl8489@naver.com">tlagpwl8489@naver.com</a></td>
+<td align="left">010-4355-8489</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163230</td>
+<td align="left">안ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:ahnsoo97@naver.com">ahnsoo97@naver.com</a></td>
+<td align="left">010-2779-6122</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143411</td>
+<td align="left">염ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:yms7560@naver.com">yms7560@naver.com</a></td>
+<td align="left">010-5054-6211</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143413</td>
+<td align="left">우ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:bubi15@naver.com">bubi15@naver.com</a></td>
+<td align="left">010-6293-4666</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163231</td>
+<td align="left">원ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:dpqmsth1@naver.com">dpqmsth1@naver.com</a></td>
+<td align="left">010-7617-3567</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163232</td>
+<td align="left">위ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:raycome@hanmail.net">raycome@hanmail.net</a></td>
+<td align="left">010-8356-3691</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20153422</td>
+<td align="left">유ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:dbalsgml703@naver.com">dbalsgml703@naver.com</a></td>
+<td align="left">010-5036-6129</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163234</td>
+<td align="left">윤ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:boradoli9@naver.com">boradoli9@naver.com</a></td>
+<td align="left">010-8806-1903</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163235</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:lgw9498@naver.com">lgw9498@naver.com</a></td>
+<td align="left">010-3001-9498</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143417</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:leedj1995@naver.com">leedj1995@naver.com</a></td>
+<td align="left">010-9166-5139</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143419</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:ehdghks0323@naver.com">ehdghks0323@naver.com</a></td>
+<td align="left">010-5481-8874</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163239</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:bins0617@naver.com">bins0617@naver.com</a></td>
+<td align="left">010-9453-4081</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143420</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">4</td>
+<td align="left"><a href="mailto:acara55@naver.com">acara55@naver.com</a></td>
+<td align="left">010-6702-2727</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163242</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:jaehijjang@naver.com">jaehijjang@naver.com</a></td>
+<td align="left">010-9306-3416</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143422</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:lhg169@naver.com">lhg169@naver.com</a></td>
+<td align="left">010-3309-2937</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143426</td>
+<td align="left">장ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:suhwan9381@naver.com">suhwan9381@naver.com</a></td>
+<td align="left">010-9381-9249</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20162228</td>
+<td align="left">정ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:jdg3362@gmail.com">jdg3362@gmail.com</a></td>
+<td align="left">010-2239-2267</td>
+</tr>
+<tr class="odd">
+<td align="left">재무금융학과</td>
+<td align="left">20163138</td>
+<td align="left">정ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:tiya516@naver.com">tiya516@naver.com</a></td>
+<td align="left">010-6227-6890</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163256</td>
+<td align="left">진ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:dasol1019@nate.com">dasol1019@nate.com</a></td>
+<td align="left">010-5316-4276</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20133436</td>
+<td align="left">채ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:kmhae12@naver.com">kmhae12@naver.com</a></td>
+<td align="left">010-4518-0224</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143437</td>
+<td align="left">한ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:fkffkfk666@naver.com">fkffkfk666@naver.com</a></td>
+<td align="left">010-2832-6160</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143336</td>
+<td align="left">황ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:rjswm65@naver.com">rjswm65@naver.com</a></td>
+<td align="left">010-7285-2010</td>
+</tr>
 </tbody>
 </table>
 </div>
 <div id="cell-phone-numbers" class="section level3">
 <h3>Cell Phone Numbers</h3>
-<pre class="r"><code>cell.na &lt;- is.na(class_roll$cell.no)
+<pre class="r"><code>cell.na &lt;- class_roll$cell.no == &quot;&quot;
 class_roll$cell.no[cell.na] &lt;- &quot;NA-NA-NA&quot;
 cell.split &lt;- sapply(class_roll$cell.no, function(x) unlist(strsplit(x, split = &quot;-&quot;)))
-# cell.split
-cell.split[3, ] &lt;- &quot;xxxx&quot;
+kable(cell.split[, 1:5])</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">010-9950-0560</th>
+<th align="left">010-5185-3283</th>
+<th align="left">010-3136-7525</th>
+<th align="left">010-4909-3791</th>
+<th align="left">010-8648-8091</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">010</td>
+<td align="left">010</td>
+<td align="left">010</td>
+<td align="left">010</td>
+<td align="left">010</td>
+</tr>
+<tr class="even">
+<td align="left">9950</td>
+<td align="left">5185</td>
+<td align="left">3136</td>
+<td align="left">4909</td>
+<td align="left">8648</td>
+</tr>
+<tr class="odd">
+<td align="left">0560</td>
+<td align="left">3283</td>
+<td align="left">7525</td>
+<td align="left">3791</td>
+<td align="left">8091</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>cell.split[3, ] &lt;- &quot;xxxx&quot;
 class_roll$cell.no &lt;- apply(cell.split, 2, paste, collapse = &quot;-&quot;)
-kable(head(class_roll))</code></pre>
+kable(class_roll)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -275,16 +625,307 @@ kable(head(class_roll))</code></pre>
 <td align="left"><a href="mailto:sbe04071@naver.com">sbe04071@naver.com</a></td>
 <td align="left">010-8786-xxxx</td>
 </tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163206</td>
+<td align="left">김ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:kyjin0304@naver.com">kyjin0304@naver.com</a></td>
+<td align="left">010-5199-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163208</td>
+<td align="left">김ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:jyk0365@naver.com">jyk0365@naver.com</a></td>
+<td align="left">010-6536-xxxx</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143404</td>
+<td align="left">김ㅇㅇ</td>
+<td align="left">4</td>
+<td align="left"><a href="mailto:rlawldus0914@naver.com">rlawldus0914@naver.com</a></td>
+<td align="left">010-4539-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143405</td>
+<td align="left">김ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:thrujjang95@naver.com">thrujjang95@naver.com</a></td>
+<td align="left">010-9410-xxxx</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143407</td>
+<td align="left">김ㅇㅇ</td>
+<td align="left">4</td>
+<td align="left"><a href="mailto:hiek2001@naver.com">hiek2001@naver.com</a></td>
+<td align="left">010-9868-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20153311</td>
+<td align="left">노ㅇㅇ</td>
+<td align="left">3</td>
+<td align="left"><a href="mailto:roks1996@naver.com">roks1996@naver.com</a></td>
+<td align="left">010-3039-xxxx</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163213</td>
+<td align="left">문ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:rkdus9205@naver.com">rkdus9205@naver.com</a></td>
+<td align="left">010-7113-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143409</td>
+<td align="left">박ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:cksdud436@nate.com">cksdud436@nate.com</a></td>
+<td align="left">010-6354-xxxx</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163221</td>
+<td align="left">박ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:phjin3716@naver.com">phjin3716@naver.com</a></td>
+<td align="left">010-3009-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143410</td>
+<td align="left">신ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:keke3943@nate.com">keke3943@nate.com</a></td>
+<td align="left">010-2074-xxxx</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163227</td>
+<td align="left">신ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:snl305@naver.com">snl305@naver.com</a></td>
+<td align="left">010-9308-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163229</td>
+<td align="left">심ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:tlagpwl8489@naver.com">tlagpwl8489@naver.com</a></td>
+<td align="left">010-4355-xxxx</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163230</td>
+<td align="left">안ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:ahnsoo97@naver.com">ahnsoo97@naver.com</a></td>
+<td align="left">010-2779-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143411</td>
+<td align="left">염ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:yms7560@naver.com">yms7560@naver.com</a></td>
+<td align="left">010-5054-xxxx</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143413</td>
+<td align="left">우ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:bubi15@naver.com">bubi15@naver.com</a></td>
+<td align="left">010-6293-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163231</td>
+<td align="left">원ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:dpqmsth1@naver.com">dpqmsth1@naver.com</a></td>
+<td align="left">010-7617-xxxx</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163232</td>
+<td align="left">위ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:raycome@hanmail.net">raycome@hanmail.net</a></td>
+<td align="left">010-8356-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20153422</td>
+<td align="left">유ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:dbalsgml703@naver.com">dbalsgml703@naver.com</a></td>
+<td align="left">010-5036-xxxx</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163234</td>
+<td align="left">윤ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:boradoli9@naver.com">boradoli9@naver.com</a></td>
+<td align="left">010-8806-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163235</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:lgw9498@naver.com">lgw9498@naver.com</a></td>
+<td align="left">010-3001-xxxx</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143417</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:leedj1995@naver.com">leedj1995@naver.com</a></td>
+<td align="left">010-9166-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143419</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:ehdghks0323@naver.com">ehdghks0323@naver.com</a></td>
+<td align="left">010-5481-xxxx</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163239</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:bins0617@naver.com">bins0617@naver.com</a></td>
+<td align="left">010-9453-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143420</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">4</td>
+<td align="left"><a href="mailto:acara55@naver.com">acara55@naver.com</a></td>
+<td align="left">010-6702-xxxx</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163242</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:jaehijjang@naver.com">jaehijjang@naver.com</a></td>
+<td align="left">010-9306-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143422</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:lhg169@naver.com">lhg169@naver.com</a></td>
+<td align="left">010-3309-xxxx</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143426</td>
+<td align="left">장ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:suhwan9381@naver.com">suhwan9381@naver.com</a></td>
+<td align="left">010-9381-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20162228</td>
+<td align="left">정ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:jdg3362@gmail.com">jdg3362@gmail.com</a></td>
+<td align="left">010-2239-xxxx</td>
+</tr>
+<tr class="odd">
+<td align="left">재무금융학과</td>
+<td align="left">20163138</td>
+<td align="left">정ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:tiya516@naver.com">tiya516@naver.com</a></td>
+<td align="left">010-6227-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20163256</td>
+<td align="left">진ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:dasol1019@nate.com">dasol1019@nate.com</a></td>
+<td align="left">010-5316-xxxx</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20133436</td>
+<td align="left">채ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:kmhae12@naver.com">kmhae12@naver.com</a></td>
+<td align="left">010-4518-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143437</td>
+<td align="left">한ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:fkffkfk666@naver.com">fkffkfk666@naver.com</a></td>
+<td align="left">010-2832-xxxx</td>
+</tr>
+<tr class="odd">
+<td align="left">금융정보통계학과</td>
+<td align="left">20143336</td>
+<td align="left">황ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:rjswm65@naver.com">rjswm65@naver.com</a></td>
+<td align="left">010-7285-xxxx</td>
+</tr>
 </tbody>
 </table>
 </div>
 <div id="e-mail" class="section level3">
 <h3>e-mail</h3>
-<pre class="r"><code>e.mail.na &lt;- which(is.na(class_roll$e.mail))
+<pre class="r"><code>e.mail.na &lt;- class_roll$e.mail == &quot;&quot;
 class_roll$e.mail[e.mail.na] &lt;- &quot;NA@NA&quot;
 email.split &lt;- sapply(class_roll$e.mail, function(x) unlist(strsplit(x, split = &quot;@&quot;)))
-# email.split
-email.split[1, ] &lt;- &quot;user_name&quot;
+kable(email.split[, 1:5])</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"><a href="mailto:coolguy93@hallym.ac.kr">coolguy93@hallym.ac.kr</a></th>
+<th align="left"><a href="mailto:wndnjs3283@naver.com">wndnjs3283@naver.com</a></th>
+<th align="left"><a href="mailto:124rbfl@naver.com">124rbfl@naver.com</a></th>
+<th align="left"><a href="mailto:tmxpsejwl2@naver.com">tmxpsejwl2@naver.com</a></th>
+<th align="left"><a href="mailto:kdh970616@naver.com">kdh970616@naver.com</a></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">coolguy93</td>
+<td align="left">wndnjs3283</td>
+<td align="left">124rbfl</td>
+<td align="left">tmxpsejwl2</td>
+<td align="left">kdh970616</td>
+</tr>
+<tr class="even">
+<td align="left">hallym.ac.kr</td>
+<td align="left">naver.com</td>
+<td align="left">naver.com</td>
+<td align="left">naver.com</td>
+<td align="left">naver.com</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>email.split[1, ] &lt;- &quot;user_name&quot;
 class_roll$e.mail &lt;- apply(email.split, 2, paste, collapse = &quot;@&quot;)
 kable(head(class_roll))</code></pre>
 <table>

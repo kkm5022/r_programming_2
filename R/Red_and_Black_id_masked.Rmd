@@ -171,6 +171,6 @@ sample(1:6, size = 2)
 
 <!--
 ```{r, save}
-save.image("../R/red_and_black_170303_data_masked.RData")
+save.image("../R/red_and_black_data_masked.RData")
 ```
 -->

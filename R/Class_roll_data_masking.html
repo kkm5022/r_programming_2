@@ -11,7 +11,7 @@
 
 <meta name="author" content="coop711" />
 
-<meta name="date" content="2018-09-09" />
+<meta name="date" content="2018-09-16" />
 
 <title>Identity Masking with Class Roll Data</title>
 
@@ -124,7 +124,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Identity Masking with Class Roll Data</h1>
 <h4 class="author"><em>coop711</em></h4>
-<h4 class="date"><em>2018-09-09</em></h4>
+<h4 class="date"><em>2018-09-16</em></h4>
 
 </div>
 
@@ -146,66 +146,31 @@ names(class_roll) &lt;- c(&quot;dept&quot;, &quot;id&quot;, &quot;name&quot;, &q
 <p>학번은 입학연도를 나타내는 첫 네자리와 개인 식별번호로 구성되어 있다. 여기서,<br />
 개인식별번호를 “9999”로 가려보자. <code>substr() &lt;-</code> 을 이용하면 학번의 개인정보를 가리는 일은 한 줄의 코드로 가능하다.</p>
 <pre class="r"><code>substr(class_roll$id, start = 5, stop = 8) &lt;- &quot;9999&quot;
-kable(head(class_roll))</code></pre>
+kable(head(class_roll$id))</code></pre>
 <table>
 <thead>
 <tr class="header">
-<th align="left">dept</th>
-<th align="left">id</th>
-<th align="left">name</th>
-<th align="left">year</th>
-<th align="left">email</th>
-<th align="left">cell_no</th>
+<th align="left">x</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">중국학과</td>
 <td align="left">20119999</td>
-<td align="left">강경민</td>
-<td align="left">4</td>
-<td align="left"><a href="mailto:ssilmido@naver.com">ssilmido@naver.com</a></td>
-<td align="left">010-9164-5954</td>
 </tr>
 <tr class="even">
-<td align="left">전자공학과</td>
 <td align="left">20119999</td>
-<td align="left">강경윤</td>
-<td align="left">4</td>
-<td align="left"><a href="mailto:33169kang@hanmail.net">33169kang@hanmail.net</a></td>
-<td align="left">010-8574-8159</td>
 </tr>
 <tr class="odd">
-<td align="left">컴퓨터공학과</td>
 <td align="left">20179999</td>
-<td align="left">강보경</td>
-<td align="left">1</td>
-<td align="left"><a href="mailto:kbk9818@naver.com">kbk9818@naver.com</a></td>
-<td align="left">010-6435-5735</td>
 </tr>
 <tr class="even">
-<td align="left">화학과</td>
 <td align="left">20149999</td>
-<td align="left">강소연</td>
-<td align="left">4</td>
-<td align="left"><a href="mailto:crown_girl@hanmail.net">crown_girl@hanmail.net</a></td>
-<td align="left">010-2066-8619</td>
 </tr>
 <tr class="odd">
-<td align="left">경영학과</td>
 <td align="left">20169999</td>
-<td align="left">강예은</td>
-<td align="left">2</td>
-<td align="left"><a href="mailto:yeeun423@naver.com">yeeun423@naver.com</a></td>
-<td align="left">010-8820-6892</td>
 </tr>
 <tr class="even">
-<td align="left">경제학과</td>
 <td align="left">20129999</td>
-<td align="left">강정우</td>
-<td align="left">3</td>
-<td align="left"><a href="mailto:jeongugang@gmail.com">jeongugang@gmail.com</a></td>
-<td align="left">010-7499-8710</td>
 </tr>
 </tbody>
 </table>
@@ -214,66 +179,54 @@ kable(head(class_roll))</code></pre>
 <h3>이름 가리기</h3>
 <p><code>substring() &lt;-</code>을 이용하면 각 이름의 2번째 글자 이후를 모두 “ㅇㅇ”으로 대체할 수 있다.</p>
 <pre class="r"><code>substring(class_roll$name, 2) &lt;- &quot;ㅇㅇ&quot;
-kable(head(class_roll))</code></pre>
+kable(head(class_roll[, c(&quot;id&quot;, &quot;name&quot;)], n = 10))</code></pre>
 <table>
 <thead>
 <tr class="header">
-<th align="left">dept</th>
 <th align="left">id</th>
 <th align="left">name</th>
-<th align="left">year</th>
-<th align="left">email</th>
-<th align="left">cell_no</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">중국학과</td>
 <td align="left">20119999</td>
 <td align="left">강ㅇㅇ</td>
-<td align="left">4</td>
-<td align="left"><a href="mailto:ssilmido@naver.com">ssilmido@naver.com</a></td>
-<td align="left">010-9164-5954</td>
 </tr>
 <tr class="even">
-<td align="left">전자공학과</td>
 <td align="left">20119999</td>
 <td align="left">강ㅇㅇ</td>
-<td align="left">4</td>
-<td align="left"><a href="mailto:33169kang@hanmail.net">33169kang@hanmail.net</a></td>
-<td align="left">010-8574-8159</td>
 </tr>
 <tr class="odd">
-<td align="left">컴퓨터공학과</td>
 <td align="left">20179999</td>
 <td align="left">강ㅇㅇ</td>
-<td align="left">1</td>
-<td align="left"><a href="mailto:kbk9818@naver.com">kbk9818@naver.com</a></td>
-<td align="left">010-6435-5735</td>
 </tr>
 <tr class="even">
-<td align="left">화학과</td>
 <td align="left">20149999</td>
 <td align="left">강ㅇㅇ</td>
-<td align="left">4</td>
-<td align="left"><a href="mailto:crown_girl@hanmail.net">crown_girl@hanmail.net</a></td>
-<td align="left">010-2066-8619</td>
 </tr>
 <tr class="odd">
-<td align="left">경영학과</td>
 <td align="left">20169999</td>
 <td align="left">강ㅇㅇ</td>
-<td align="left">2</td>
-<td align="left"><a href="mailto:yeeun423@naver.com">yeeun423@naver.com</a></td>
-<td align="left">010-8820-6892</td>
 </tr>
 <tr class="even">
-<td align="left">경제학과</td>
 <td align="left">20129999</td>
 <td align="left">강ㅇㅇ</td>
-<td align="left">3</td>
-<td align="left"><a href="mailto:jeongugang@gmail.com">jeongugang@gmail.com</a></td>
-<td align="left">010-7499-8710</td>
+</tr>
+<tr class="odd">
+<td align="left">20149999</td>
+<td align="left">고ㅇㅇ</td>
+</tr>
+<tr class="even">
+<td align="left">20169999</td>
+<td align="left">구ㅇㅇ</td>
+</tr>
+<tr class="odd">
+<td align="left">20179999</td>
+<td align="left">권ㅇㅇ</td>
+</tr>
+<tr class="even">
+<td align="left">20129999</td>
+<td align="left">권ㅇㅇ</td>
 </tr>
 </tbody>
 </table>
@@ -282,66 +235,65 @@ kable(head(class_roll))</code></pre>
 <h3>전화번호 가리기</h3>
 <p>모바일 폰 번호의 끝 네 자리를 “xxxx” 로 대체한다. 정상적으로 번호가 나올 경우 열번째 글자부터 열세번째글자에 해당한다.</p>
 <pre class="r"><code>substring(class_roll$cell_no, 10, 13) &lt;- &quot;xxxx&quot;
-kable(head(class_roll))</code></pre>
+kable(head(class_roll[, c(&quot;id&quot;, &quot;name&quot;, &quot;cell_no&quot;)], n = 10))</code></pre>
 <table>
 <thead>
 <tr class="header">
-<th align="left">dept</th>
 <th align="left">id</th>
 <th align="left">name</th>
-<th align="left">year</th>
-<th align="left">email</th>
 <th align="left">cell_no</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">중국학과</td>
 <td align="left">20119999</td>
 <td align="left">강ㅇㅇ</td>
-<td align="left">4</td>
-<td align="left"><a href="mailto:ssilmido@naver.com">ssilmido@naver.com</a></td>
 <td align="left">010-9164-xxxx</td>
 </tr>
 <tr class="even">
-<td align="left">전자공학과</td>
 <td align="left">20119999</td>
 <td align="left">강ㅇㅇ</td>
-<td align="left">4</td>
-<td align="left"><a href="mailto:33169kang@hanmail.net">33169kang@hanmail.net</a></td>
 <td align="left">010-8574-xxxx</td>
 </tr>
 <tr class="odd">
-<td align="left">컴퓨터공학과</td>
 <td align="left">20179999</td>
 <td align="left">강ㅇㅇ</td>
-<td align="left">1</td>
-<td align="left"><a href="mailto:kbk9818@naver.com">kbk9818@naver.com</a></td>
 <td align="left">010-6435-xxxx</td>
 </tr>
 <tr class="even">
-<td align="left">화학과</td>
 <td align="left">20149999</td>
 <td align="left">강ㅇㅇ</td>
-<td align="left">4</td>
-<td align="left"><a href="mailto:crown_girl@hanmail.net">crown_girl@hanmail.net</a></td>
 <td align="left">010-2066-xxxx</td>
 </tr>
 <tr class="odd">
-<td align="left">경영학과</td>
 <td align="left">20169999</td>
 <td align="left">강ㅇㅇ</td>
-<td align="left">2</td>
-<td align="left"><a href="mailto:yeeun423@naver.com">yeeun423@naver.com</a></td>
 <td align="left">010-8820-xxxx</td>
 </tr>
 <tr class="even">
-<td align="left">경제학과</td>
 <td align="left">20129999</td>
 <td align="left">강ㅇㅇ</td>
-<td align="left">3</td>
-<td align="left"><a href="mailto:jeongugang@gmail.com">jeongugang@gmail.com</a></td>
 <td align="left">010-7499-xxxx</td>
+</tr>
+<tr class="odd">
+<td align="left">20149999</td>
+<td align="left">고ㅇㅇ</td>
+<td align="left">010-9284-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">20169999</td>
+<td align="left">구ㅇㅇ</td>
+<td align="left">010-8228-xxxx</td>
+</tr>
+<tr class="odd">
+<td align="left">20179999</td>
+<td align="left">권ㅇㅇ</td>
+<td align="left">010-4222-xxxx</td>
+</tr>
+<tr class="even">
+<td align="left">20129999</td>
+<td align="left">권ㅇㅇ</td>
+<td align="left">010-4769-xxxx</td>
 </tr>
 </tbody>
 </table>
@@ -350,65 +302,51 @@ kable(head(class_roll))</code></pre>
 <h3>전공 단위 이름 가리기</h3>
 <p>전공 단위 이름은 “학과”, “과”, “학”, “전공” 등 매우 다양한 명칭이 있으므로 <code>sub()</code>, <code>gsub()</code> 함수의 정규표현(regular expression)을 활용하여 “ㅇㅇ학과” 와 같은 방식으로 이름을 가릴 수 있다.</p>
 <pre class="r"><code>class_roll$dept &lt;- sub(&quot;^.+$&quot;, &quot;ㅇㅇ학과&quot;, class_roll$dept)
-kable(head(class_roll))</code></pre>
+kable(head(class_roll[, c(&quot;id&quot;, &quot;name&quot;, &quot;dept&quot;, &quot;cell_no&quot;)]))</code></pre>
 <table>
 <thead>
 <tr class="header">
-<th align="left">dept</th>
 <th align="left">id</th>
 <th align="left">name</th>
-<th align="left">year</th>
-<th align="left">email</th>
+<th align="left">dept</th>
 <th align="left">cell_no</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">ㅇㅇ학과</td>
 <td align="left">20119999</td>
 <td align="left">강ㅇㅇ</td>
-<td align="left">4</td>
-<td align="left"><a href="mailto:ssilmido@naver.com">ssilmido@naver.com</a></td>
+<td align="left">ㅇㅇ학과</td>
 <td align="left">010-9164-xxxx</td>
 </tr>
 <tr class="even">
-<td align="left">ㅇㅇ학과</td>
 <td align="left">20119999</td>
 <td align="left">강ㅇㅇ</td>
-<td align="left">4</td>
-<td align="left"><a href="mailto:33169kang@hanmail.net">33169kang@hanmail.net</a></td>
+<td align="left">ㅇㅇ학과</td>
 <td align="left">010-8574-xxxx</td>
 </tr>
 <tr class="odd">
-<td align="left">ㅇㅇ학과</td>
 <td align="left">20179999</td>
 <td align="left">강ㅇㅇ</td>
-<td align="left">1</td>
-<td align="left"><a href="mailto:kbk9818@naver.com">kbk9818@naver.com</a></td>
+<td align="left">ㅇㅇ학과</td>
 <td align="left">010-6435-xxxx</td>
 </tr>
 <tr class="even">
-<td align="left">ㅇㅇ학과</td>
 <td align="left">20149999</td>
 <td align="left">강ㅇㅇ</td>
-<td align="left">4</td>
-<td align="left"><a href="mailto:crown_girl@hanmail.net">crown_girl@hanmail.net</a></td>
+<td align="left">ㅇㅇ학과</td>
 <td align="left">010-2066-xxxx</td>
 </tr>
 <tr class="odd">
-<td align="left">ㅇㅇ학과</td>
 <td align="left">20169999</td>
 <td align="left">강ㅇㅇ</td>
-<td align="left">2</td>
-<td align="left"><a href="mailto:yeeun423@naver.com">yeeun423@naver.com</a></td>
+<td align="left">ㅇㅇ학과</td>
 <td align="left">010-8820-xxxx</td>
 </tr>
 <tr class="even">
-<td align="left">ㅇㅇ학과</td>
 <td align="left">20129999</td>
 <td align="left">강ㅇㅇ</td>
-<td align="left">3</td>
-<td align="left"><a href="mailto:jeongugang@gmail.com">jeongugang@gmail.com</a></td>
+<td align="left">ㅇㅇ학과</td>
 <td align="left">010-7499-xxxx</td>
 </tr>
 </tbody>
@@ -416,7 +354,8 @@ kable(head(class_roll))</code></pre>
 </div>
 <div id="e-mail-" class="section level3">
 <h3>e-mail 가리기</h3>
-<p>email 주소는 <code>@</code>를 사이에 두고 나뉘어진다. <code>gsub()</code> 함수와 정규표현(regular expression)을 활용하면 email 주소에서 서비스업체명은 그대로 두고 개인 식별이 가능한 이름 부분을 <code>user_name</code>으로 대체할 수 있다. 160명 중 25명만 랜덤하게 표본추출한다.</p>
+<p>email 주소는 <code>@</code>를 사이에 두고 나뉘어진다.</p>
+<p><code>sub()</code>, <code>gsub()</code> 함수와 정규표현(regular expression)을 활용하면 email 주소에서 서비스업체명은 그대로 두고 개인 식별이 가능한 이름 부분을 <code>user_name</code>으로 대체할 수 있다. 160명 중 25명만 랜덤하게 표본추출한다.</p>
 <pre class="r"><code>class_roll$email &lt;- sub(&quot;^.+@&quot;, &quot;user_name@&quot;, class_roll$email)
 kable(class_roll[sample(1:nrow(class_roll), size = 25), ])</code></pre>
 <table>
@@ -433,202 +372,40 @@ kable(class_roll[sample(1:nrow(class_roll), size = 25), ])</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td>72</td>
-<td align="left">ㅇㅇ학과</td>
-<td align="left">20169999</td>
-<td align="left">서ㅇㅇ</td>
-<td align="left">2</td>
-<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-7300-xxxx</td>
-</tr>
-<tr class="even">
-<td>90</td>
+<td>52</td>
 <td align="left">ㅇㅇ학과</td>
 <td align="left">20139999</td>
-<td align="left">유ㅇㅇ</td>
-<td align="left">3</td>
+<td align="left">박ㅇㅇ</td>
+<td align="left">2</td>
 <td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-9984-xxxx</td>
-</tr>
-<tr class="odd">
-<td>68</td>
-<td align="left">ㅇㅇ학과</td>
-<td align="left">20179999</td>
-<td align="left">배ㅇㅇ</td>
-<td align="left">1</td>
-<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-8259-xxxx</td>
+<td align="left">010-6296-xxxx</td>
 </tr>
 <tr class="even">
-<td>66</td>
-<td align="left">ㅇㅇ학과</td>
-<td align="left">20119999</td>
-<td align="left">방ㅇㅇ</td>
-<td align="left">3</td>
-<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-8975-xxxx</td>
-</tr>
-<tr class="odd">
-<td>47</td>
-<td align="left">ㅇㅇ학과</td>
-<td align="left">20159999</td>
-<td align="left">김ㅇㅇ</td>
-<td align="left">3</td>
-<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-5848-xxxx</td>
-</tr>
-<tr class="even">
-<td>21</td>
+<td>86</td>
 <td align="left">ㅇㅇ학과</td>
 <td align="left">20169999</td>
-<td align="left">김ㅇㅇ</td>
-<td align="left">2</td>
-<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-6382-xxxx</td>
-</tr>
-<tr class="odd">
-<td>102</td>
-<td align="left">ㅇㅇ학과</td>
-<td align="left">20179999</td>
-<td align="left">이ㅇㅇ</td>
-<td align="left">1</td>
-<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-2622-xxxx</td>
-</tr>
-<tr class="even">
-<td>33</td>
-<td align="left">ㅇㅇ학과</td>
-<td align="left">20149999</td>
-<td align="left">김ㅇㅇ</td>
-<td align="left">4</td>
-<td align="left"><a href="mailto:user_name@gmail.com">user_name@gmail.com</a></td>
-<td align="left">010-7209-xxxx</td>
-</tr>
-<tr class="odd">
-<td>160</td>
-<td align="left">ㅇㅇ학과</td>
-<td align="left">20139999</td>
-<td align="left">황ㅇㅇ</td>
-<td align="left">2</td>
-<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-9011-xxxx</td>
-</tr>
-<tr class="even">
-<td>8</td>
-<td align="left">ㅇㅇ학과</td>
-<td align="left">20169999</td>
-<td align="left">구ㅇㅇ</td>
-<td align="left">2</td>
-<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-8228-xxxx</td>
-</tr>
-<tr class="odd">
-<td>87</td>
-<td align="left">ㅇㅇ학과</td>
-<td align="left">20179999</td>
 <td align="left">안ㅇㅇ</td>
-<td align="left">1</td>
-<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-4874-xxxx</td>
-</tr>
-<tr class="even">
-<td>11</td>
-<td align="left">ㅇㅇ학과</td>
-<td align="left">20179999</td>
-<td align="left">권ㅇㅇ</td>
-<td align="left">1</td>
-<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-4207-xxxx</td>
-</tr>
-<tr class="odd">
-<td>82</td>
-<td align="left">ㅇㅇ학과</td>
-<td align="left">20179999</td>
-<td align="left">심ㅇㅇ</td>
-<td align="left">1</td>
-<td align="left"><a href="mailto:user_name@nate.com">user_name@nate.com</a></td>
-<td align="left">010-7379-xxxx</td>
-</tr>
-<tr class="even">
-<td>28</td>
-<td align="left">ㅇㅇ학과</td>
-<td align="left">20179999</td>
-<td align="left">김ㅇㅇ</td>
-<td align="left">1</td>
-<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-9356-xxxx</td>
-</tr>
-<tr class="odd">
-<td>51</td>
-<td align="left">ㅇㅇ학과</td>
-<td align="left">20179999</td>
-<td align="left">문ㅇㅇ</td>
-<td align="left">1</td>
-<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-6767-xxxx</td>
-</tr>
-<tr class="even">
-<td>89</td>
-<td align="left">ㅇㅇ학과</td>
-<td align="left">20149999</td>
-<td align="left">우ㅇㅇ</td>
-<td align="left">4</td>
-<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-5193-xxxx</td>
-</tr>
-<tr class="odd">
-<td>14</td>
-<td align="left">ㅇㅇ학과</td>
-<td align="left">20119999</td>
-<td align="left">김ㅇㅇ</td>
-<td align="left">3</td>
-<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-8009-xxxx</td>
-</tr>
-<tr class="even">
-<td>119</td>
-<td align="left">ㅇㅇ학과</td>
-<td align="left">20169999</td>
-<td align="left">이ㅇㅇ</td>
 <td align="left">2</td>
 <td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-4032-xxxx</td>
+<td align="left">010-9310-xxxx</td>
 </tr>
 <tr class="odd">
-<td>36</td>
+<td>114</td>
 <td align="left">ㅇㅇ학과</td>
-<td align="left">20119999</td>
-<td align="left">김ㅇㅇ</td>
+<td align="left">20149999</td>
+<td align="left">이ㅇㅇ</td>
 <td align="left">4</td>
 <td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-8799-xxxx</td>
+<td align="left">010-2356-xxxx</td>
 </tr>
 <tr class="even">
-<td>125</td>
+<td>62</td>
 <td align="left">ㅇㅇ학과</td>
-<td align="left">20179999</td>
-<td align="left">장ㅇㅇ</td>
-<td align="left">1</td>
-<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-8276-xxxx</td>
-</tr>
-<tr class="odd">
-<td>43</td>
-<td align="left">ㅇㅇ학과</td>
-<td align="left">20159999</td>
-<td align="left">김ㅇㅇ</td>
+<td align="left">20139999</td>
+<td align="left">박ㅇㅇ</td>
 <td align="left">3</td>
 <td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-4886-xxxx</td>
-</tr>
-<tr class="even">
-<td>24</td>
-<td align="left">ㅇㅇ학과</td>
-<td align="left">20179999</td>
-<td align="left">김ㅇㅇ</td>
-<td align="left">1</td>
-<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
-<td align="left">010-9318-xxxx</td>
+<td align="left">010-4929-xxxx</td>
 </tr>
 <tr class="odd">
 <td>115</td>
@@ -640,6 +417,159 @@ kable(class_roll[sample(1:nrow(class_roll), size = 25), ])</code></pre>
 <td align="left">010-4843-xxxx</td>
 </tr>
 <tr class="even">
+<td>107</td>
+<td align="left">ㅇㅇ학과</td>
+<td align="left">20179999</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">1</td>
+<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
+<td align="left">010-5376-xxxx</td>
+</tr>
+<tr class="odd">
+<td>122</td>
+<td align="left">ㅇㅇ학과</td>
+<td align="left">20179999</td>
+<td align="left">임ㅇㅇ</td>
+<td align="left">1</td>
+<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
+<td align="left">010-7231-xxxx</td>
+</tr>
+<tr class="even">
+<td>74</td>
+<td align="left">ㅇㅇ학과</td>
+<td align="left">20179999</td>
+<td align="left">손ㅇㅇ</td>
+<td align="left">1</td>
+<td align="left"><a href="mailto:user_name@hanmail.net">user_name@hanmail.net</a></td>
+<td align="left">010-9450-xxxx</td>
+</tr>
+<tr class="odd">
+<td>131</td>
+<td align="left">ㅇㅇ학과</td>
+<td align="left">20139999</td>
+<td align="left">정ㅇㅇ</td>
+<td align="left">3</td>
+<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
+<td align="left">010-6368-xxxx</td>
+</tr>
+<tr class="even">
+<td>146</td>
+<td align="left">ㅇㅇ학과</td>
+<td align="left">20179999</td>
+<td align="left">최ㅇㅇ</td>
+<td align="left">1</td>
+<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
+<td align="left">010-6387-xxxx</td>
+</tr>
+<tr class="odd">
+<td>18</td>
+<td align="left">ㅇㅇ학과</td>
+<td align="left">20159999</td>
+<td align="left">김ㅇㅇ</td>
+<td align="left">3</td>
+<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
+<td align="left">010-3694-xxxx</td>
+</tr>
+<tr class="even">
+<td>70</td>
+<td align="left">ㅇㅇ학과</td>
+<td align="left">20179999</td>
+<td align="left">서ㅇㅇ</td>
+<td align="left">1</td>
+<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
+<td align="left">010-2934-xxxx</td>
+</tr>
+<tr class="odd">
+<td>117</td>
+<td align="left">ㅇㅇ학과</td>
+<td align="left">20169999</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
+<td align="left">010-4650-xxxx</td>
+</tr>
+<tr class="even">
+<td>31</td>
+<td align="left">ㅇㅇ학과</td>
+<td align="left">20119999</td>
+<td align="left">김ㅇㅇ</td>
+<td align="left">4</td>
+<td align="left"><a href="mailto:user_name@nate.com">user_name@nate.com</a></td>
+<td align="left">010-2297-xxxx</td>
+</tr>
+<tr class="odd">
+<td>109</td>
+<td align="left">ㅇㅇ학과</td>
+<td align="left">20179999</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">1</td>
+<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
+<td align="left">010-7663-xxxx</td>
+</tr>
+<tr class="even">
+<td>101</td>
+<td align="left">ㅇㅇ학과</td>
+<td align="left">20169999</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
+<td align="left">010-4964-xxxx</td>
+</tr>
+<tr class="odd">
+<td>60</td>
+<td align="left">ㅇㅇ학과</td>
+<td align="left">20179999</td>
+<td align="left">박ㅇㅇ</td>
+<td align="left">1</td>
+<td align="left"><a href="mailto:user_name@hanmail.net">user_name@hanmail.net</a></td>
+<td align="left">010-4274-xxxx</td>
+</tr>
+<tr class="even">
+<td>152</td>
+<td align="left">ㅇㅇ학과</td>
+<td align="left">20149999</td>
+<td align="left">최ㅇㅇ</td>
+<td align="left">4</td>
+<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
+<td align="left">010-4259-xxxx</td>
+</tr>
+<tr class="odd">
+<td>67</td>
+<td align="left">ㅇㅇ학과</td>
+<td align="left">20179999</td>
+<td align="left">배ㅇㅇ</td>
+<td align="left">1</td>
+<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
+<td align="left">010-3779-xxxx</td>
+</tr>
+<tr class="even">
+<td>63</td>
+<td align="left">ㅇㅇ학과</td>
+<td align="left">20179999</td>
+<td align="left">박ㅇㅇ</td>
+<td align="left">1</td>
+<td align="left"><a href="mailto:user_name@nate.com">user_name@nate.com</a></td>
+<td align="left">010-6219-xxxx</td>
+</tr>
+<tr class="odd">
+<td>108</td>
+<td align="left">ㅇㅇ학과</td>
+<td align="left">20179999</td>
+<td align="left">이ㅇㅇ</td>
+<td align="left">1</td>
+<td align="left"><a href="mailto:user_name@gmail.com">user_name@gmail.com</a></td>
+<td align="left">010-9632-xxxx</td>
+</tr>
+<tr class="even">
+<td>30</td>
+<td align="left">ㅇㅇ학과</td>
+<td align="left">20179999</td>
+<td align="left">김ㅇㅇ</td>
+<td align="left">1</td>
+<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
+<td align="left">010-8854-xxxx</td>
+</tr>
+<tr class="odd">
 <td>110</td>
 <td align="left">ㅇㅇ학과</td>
 <td align="left">20179999</td>
@@ -648,24 +578,28 @@ kable(class_roll[sample(1:nrow(class_roll), size = 25), ])</code></pre>
 <td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
 <td align="left">010-6602-xxxx</td>
 </tr>
-<tr class="odd">
-<td>2</td>
+<tr class="even">
+<td>154</td>
 <td align="left">ㅇㅇ학과</td>
-<td align="left">20119999</td>
-<td align="left">강ㅇㅇ</td>
-<td align="left">4</td>
-<td align="left"><a href="mailto:user_name@hanmail.net">user_name@hanmail.net</a></td>
-<td align="left">010-8574-xxxx</td>
+<td align="left">20149999</td>
+<td align="left">최ㅇㅇ</td>
+<td align="left">2</td>
+<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
+<td align="left">010-7637-xxxx</td>
+</tr>
+<tr class="odd">
+<td>85</td>
+<td align="left">ㅇㅇ학과</td>
+<td align="left">20139999</td>
+<td align="left">안ㅇㅇ</td>
+<td align="left">3</td>
+<td align="left"><a href="mailto:user_name@naver.com">user_name@naver.com</a></td>
+<td align="left">010-5030-xxxx</td>
 </tr>
 </tbody>
 </table>
-<!--
-
-```r
-write.table(class_roll, file ="../data/class_roll_masked.txt")
-save.image("../R/class_roll_data_masked.RData")
-```
--->
+<pre class="r"><code>write.table(class_roll, file =&quot;../data/class_roll_masked.txt&quot;)
+save.image(&quot;../R/class_roll_data_masked.RData&quot;)</code></pre>
 </div>
 
 

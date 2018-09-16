@@ -34,7 +34,7 @@ names(class_roll) <- c("dept", "id", "name", "year", "email", "cell_no")
 
 ```{r}
 substr(class_roll$id, start = 5, stop = 8) <- "9999"
-kable(head(class_roll))
+kable(head(class_roll$id))
 ```
 
 ### 이름 가리기
@@ -43,7 +43,7 @@ kable(head(class_roll))
 
 ```{r}
 substring(class_roll$name, 2) <- "ㅇㅇ"
-kable(head(class_roll))
+kable(head(class_roll[, c("id", "name")], n = 10))
 ```
 
 ### 전화번호 가리기
@@ -52,7 +52,7 @@ kable(head(class_roll))
 
 ```{r, cell_no}
 substring(class_roll$cell_no, 10, 13) <- "xxxx"
-kable(head(class_roll))
+kable(head(class_roll[, c("id", "name", "cell_no")], n = 10))
 ```
 
 ### 전공 단위 이름 가리기
@@ -61,22 +61,22 @@ kable(head(class_roll))
 
 ```{r, dept}
 class_roll$dept <- sub("^.+$", "ㅇㅇ학과", class_roll$dept)
-kable(head(class_roll))
+kable(head(class_roll[, c("id", "name", "dept", "cell_no")]))
 ```
 
 ### e-mail 가리기
 
 email 주소는 `@`를 사이에 두고 나뉘어진다. 
-`gsub()` 함수와 정규표현(regular expression)을 활용하면 email 주소에서 서비스업체명은 그대로 두고 개인 식별이 가능한 이름 부분을 `user_name`으로 대체할 수 있다. 160명 중 25명만 랜덤하게 표본추출한다.
+
+`sub()`, `gsub()` 함수와 정규표현(regular expression)을 활용하면 email 주소에서 서비스업체명은 그대로 두고 개인 식별이 가능한 이름 부분을 `user_name`으로 대체할 수 있다. 160명 중 25명만 랜덤하게 표본추출한다.
 
 ```{r, e_mail}
 class_roll$email <- sub("^.+@", "user_name@", class_roll$email)
 kable(class_roll[sample(1:nrow(class_roll), size = 25), ])
 ```
 
-<!--
+
 ```{r, save}
 write.table(class_roll, file ="../data/class_roll_masked.txt")
 save.image("../R/class_roll_data_masked.RData")
 ```
--->

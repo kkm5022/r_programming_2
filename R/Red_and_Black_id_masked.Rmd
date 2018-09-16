@@ -149,6 +149,10 @@ set.seed(1)
 sample(1:6, size = 2)
 sample(1:6, size = 2)
 sample(1:6, size = 2)
+set.seed(1)
+sample(1:6, size = 2)
+sample(1:6, size = 2)
+sample(1:6, size = 2)
 ```
 
 동일한 결과를 반복적으로 얻는 경우

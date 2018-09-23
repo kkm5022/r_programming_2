@@ -134,6 +134,7 @@ marks_rw <- literacy_df %>%
   `==`(ans) %>%
   ifelse("R", "W") 
 marks_rw %>%
+  head %>%
   pander
 ```
 

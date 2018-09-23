@@ -206,7 +206,9 @@ score %>%
 ##### QQ plot
 
 ```{r, qqplots, echo = FALSE, fig.width = 6, fig.height = 6}
-qqplot(x = score[Red], y = score[Black], xlab = "Red", ylab = "Black", ylim = c(65, 100))
+qqplot(x = score[Red], y = score[Black], 
+       xlab = "Red", ylab = "Black", 
+       xlim = c(60, 100), ylim = c(60, 100))
 ```
 
 <P style = "page-break-before:always">
@@ -240,7 +242,8 @@ plot(add = TRUE)
 grade <- ifelse(score <= 24, "I", ifelse(score <= 48, "II", ifelse(score <= 72, "III", "IV"))) %>%
                   factor(levels = c("I", "II", "III", "IV"))
 grade_tbl <- grade %>%
-  table("문해력 등급 분포" = ., exclude = NULL)
+  table("문해력 등급 분포" = ., exclude = NULL) %>%
+  c(., "계" = sum(.))
 names(grade_tbl)[5] <- "결석"
 grade_tbl %>%
   pander(caption = "문해력 등급 분포")
@@ -257,7 +260,7 @@ grade_tbl_group %>%
 
 #### 문항 유형별 점수 분석
 
-```{r, item by type, echo = TRUE}
+```{r, item by type, echo = FALSE}
 type_kr <- "../data/literacy_type.txt" %>%
   scan(what = "") %>%
   factor(levels = c("a", "b", "c"), labels = c("사실적", "추론적", "비판적"))
@@ -270,16 +273,26 @@ type_kr <- "../data/literacy_type.txt" %>%
 -->
 
 ```{r, computing scores by types, echo = FALSE, results = 'hide', eval = TRUE}
+score_type <- marks %>%
+  t %>%
+  aggregate(list("유형" = type_kr), FUN = sum, na.rm = TRUE)
+score_type
 score_type <- aggregate(t(marks), list("유형" = type_kr), sum, na.rm = TRUE)
 score_type == 0
 score_type[score_type == 0] <- NA
-score_type_by.student <- t(score_type[, -1])
+score_type_student <- score_type %>%
+  `[`(-1) %>%
+  t
+  t(score_type[, -1])
 N <- nrow(literacy)
-dimnames(score_type_by.student) <- list(paste("s", 1:N, sep = ""), paste(levels(type_kr), c("(52점)", "(36점)", "(12점)"), sep=""))
+dimnames(score_type_student) <- list(paste0("s", 1:N), 
+                                     paste0(levels(type_kr), c("(52점)", "(36점)", "(12점)")))
 ```
 
 ```{r, scores by types, echo = FALSE, results = 'hide', eval = TRUE}
-pander(score_type_by.student * 4)
+score_type_student %>%
+  `*`(4) %>%
+  pander
 ```
 
 <!--##### 문항별 정답률-->
@@ -290,8 +303,9 @@ pander(score_type_by.student * 4)
 -->
 
 ```{r, NA management, echo = FALSE, results = 'hide'}
-apply(marks_rw, 1, function(x) all(is.na(x)))
-na.all <- which(apply(marks_rw, 1, function(x) all(is.na(x))))
+na_all <- marks_rw %>%
+  apply(MARGIN = 1, {. %>% is.na %>% all }) %>%
+  which
 ```
 
 <!--* 정답률 계산
@@ -300,36 +314,43 @@ na.all <- which(apply(marks_rw, 1, function(x) all(is.na(x))))
 -->
 
 ```{r, computing correct answer rates, echo = FALSE, results = 'hide', eval = TRUE}
-marks.2 <- marks_rw
-marks.2[is.na(marks.2)] <- "W"
-marks.2[na.all, ] <- NA
-marks.2 <- ifelse(marks.2 == "R", 1, 0)
-rate.by.item <- apply(marks.2, 2, mean, na.rm = TRUE)*100
-str(rate.by.item)
-rate.by.item <- as.matrix(rate.by.item, 25)
-dimnames(rate.by.item) <- list("문항" =  paste("문", 1:25, sep = ""), "정답률" = "정답률")
-# colnames(rate.by.item) <- "정답률"
+marks_2 <- marks_rw
+marks_2[is.na(marks_2)] <- "W"
+marks_2[na_all, ] <- NA
+marks_2 %<>% 
+  `==`("R") %>%
+  ifelse(1, 0)
+rate_item <- marks_2 %>% 
+  apply(MARGIN = 2, FUN = mean, na.rm = TRUE) %>%
+  `*`(100)
+str(rate_item)
+rate_item %<>% 
+  round(digits = 1) %>%
+  as.matrix(nrow = 25)
+dimnames(rate_item) <- list("문항" =  paste0("문", 1:25), "정답률" = "정답률")
 ```
 
 <!--
 ```{r, correct answer rates, echo = FALSE, eval = TRUE}
-pander(rate.by.item, digits = 3)
+pander(rate_item, digits = 3)
 ```
 -->
 
 ##### 유형별 정답률
 
 ```{r, rates by types, echo = FALSE, eval = TRUE}
-rate.by.item.type <- data.frame("유형" = type_kr, "정답률" = rate.by.item)
-dimnames(rate.by.item.type) <- list("문항" = paste("문", 1:25, sep = ""), "유형과 정답률" = c("유형", "정답률"))
-pander(format(rate.by.item.type, digits = 3, nsmall = 1), align = c("l", "r"))
+rate_item_type <- data.frame("유형" = type_kr, "정답률" = rate_item)
+dimnames(rate_item_type) <- list("문항" = paste0("문", 1:25), "유형과 정답률" = c("유형", "정답률"))
+rate_item_type %>%
+  format(digits = 3, nsmall = 1) %>%
+  pander(align = c("l", "r"))
 ```
 
 <!--* `replace()`를 이용하면, 
 
 ```{r, eval = TRUE}
 (marks.3 <- replace(marks_rw, is.na(marks_rw), "W"))
-marks.3[na.all, ] <- NA
+marks.3[na_all, ] <- NA
 marks.3
 ```
 -->
@@ -341,25 +362,37 @@ marks.3
 ##### 정답률 80% 이하
 
 ```{r, hardest question below 80, echo = FALSE, eval = TRUE}
-pander(rate.by.item[which(rate.by.item <= 80), ])
+rate_item %>%
+  `[`(. <= 80, , drop = FALSE) %>%
+  t %>%
+  pander
 ```
 
 ##### 정답률 70% 이하
 
 ```{r, hardest question below 70, echo = FALSE, eval = TRUE}
-pander(rate.by.item[which(rate.by.item <= 70), ])
+rate_item %>%
+  `[`(. <= 70, , drop = FALSE) %>%
+  t %>%
+  pander
 ```
 
 ##### 정답률 60% 이하
 
 ```{r, hardest question below 60, echo = FALSE, eval = TRUE}
-pander(t(rate.by.item[which(rate.by.item <= 60), , drop = FALSE]))
+rate_item %>%
+  `[`(. <= 60, , drop = FALSE) %>%
+  t %>%
+  pander
 ```
 
 ##### 정답률 50% 이하
 
 ```{r, hardest question below 50, echo = FALSE, eval = TRUE}
-pander(t(rate.by.item[which(rate.by.item <= 50), , drop = FALSE]))
+rate_item %>%
+  `[`(. <= 50, , drop = FALSE) %>%
+  t %>%
+  pander
 ```
 
 

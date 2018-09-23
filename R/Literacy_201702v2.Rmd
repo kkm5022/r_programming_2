@@ -109,14 +109,9 @@ text(x = literacy_tbl[1, ] + literacy_tbl[2, ] + literacy_tbl[3, ] + literacy_tb
 #### 문해력 점수 계산
 
 <!--* 정답 맞춰보기
-    * 정답 읽어들이기. `what=""`로 설정하여 `char`취급. 
--->
+    * 정답 읽어들이기. `what = ""`로 설정하여 `char`취급. 
 
-```{r, read ans, echo = FALSE, results = 'hide'}
-(ans <- scan("../data/literacy_ans.txt", what = ""))
-```
-
-<!--* 각 학생들의 답안과 맞춰보기 위하여 정답표 작성.
+* 각 학생들의 답안과 맞춰보기 위하여 정답표 작성.
     * 문항별로 정답과 비교하기 위하여 각 문항을 리스트의 원소로 분리
     * `split()` 의 기능과 한계에 유의. `factor` 성격으로부터 `1, 10, 11, ..., 2, 20, ..., 3, 4, 5, ... , 9`로 순서를 잡게 되므로 다시 한번 정리할 필요.
 -->
@@ -175,20 +170,26 @@ score %>%
 # stem(score, scale = 2)
 score %>%
   stem(scale = 0.5)
-Red <- literacy$group == "Red"
-Black <- literacy$group == "Black"
+Red <- literacy %$%
+  `==`(group, "Red")
+Black <- literacy %$%
+  `==`(group, "Black")
 ```
 
 - Red
 
 ```{r, stem for Red}
-stem(score[Red], scale = 0.5)
+score %>%
+  `[`(literacy$group == "Red") %>%
+  stem(scale = 0.5)
 ```
 
 - Black
 
 ```{r, stem for Black}
-stem(score[Black], scale = 1)
+score %>%
+  `[`(literacy$group == "Black") %>%
+  stem(scale = 0.5)
 ```
 
 <P style = "page-break-before:always">
@@ -198,7 +199,8 @@ stem(score[Black], scale = 1)
 ##### Box Plots
 
 ```{r, boxplots, echo = FALSE, fig.width = 6, fig.height = 6}
-boxplot(score ~ literacy$group)
+score %>%
+  plot(literacy$group, .)
 ```
 
 ##### QQ plot
@@ -212,10 +214,18 @@ qqplot(x = score[Red], y = score[Black], xlab = "Red", ylab = "Black", ylim = c(
 ##### ECDF plot
 
 ```{r, ECDF, echo = FALSE, fig.width = 6, fig.height = 6, eval = TRUE}
-score_red <- score[literacy$group == "Red" & !is.na(score)]
-score_black <- score[literacy$group == "Black" & !is.na(score)]
-plot(ecdf(score_red), xlim = range(c(score_red, score_black)), col = "red", main = "ECDF")
-plot(ecdf(score_black), add = TRUE)
+score %>%
+`[`(Red & !is.na(score)) %>%
+ecdf %>%
+plot(xlim = score %>% range(na.rm = TRUE), col = "red", main = "ECDF")
+score %>%
+`[`(Black & !is.na(score)) %>%
+ecdf %>%
+plot(add = TRUE)
+# score_red <- score[Red & !is.na(score)]
+# score_black <- score[Black & !is.na(score)]
+# plot(ecdf(score_red), xlim = range(c(score_red, score_black)), col = "red", main = "ECDF")
+# plot(ecdf(score_black), add = TRUE)
 ```
 
 <!--

@@ -37,7 +37,8 @@ literacy_roll <- read.xlsx("../data/literacy_1702.xlsx",
                            colIndex = c(1:26), 
                            colClasses = c(rep("character", 26)), 
                            header = FALSE, 
-                           stringsAsFactors = FALSE)
+                           stringsAsFactors = FALSE,
+                           encoding = "UTF-8")
 names(literacy_roll) <- c("id", paste("Q", 1:25, sep = ""))
 head(literacy_roll$id)
 str(literacy_roll)
@@ -247,14 +248,15 @@ grade_tbl <- grade %>%
   c(., "계" = sum(.))
 names(grade_tbl)[5] <- "결석"
 grade_tbl %>%
-  pander(caption = "문해력 등급 분포")
+  t %>%
+  kable(caption = "문해력 등급 분포")
 grade_tbl_group <- literacy %$%
   table("Group" = .$group, "문해력 등급 분포" = grade, exclude = NULL)
 colnames(grade_tbl_group)[5] <- "결석"
 grade_tbl_group %>%
   cbind(., "계" = rowSums(.)) %>%
   rbind(., "계" = colSums(.)) %>%
-  pander(caption = "그룹별 문해력 등급 분포")
+  kable(caption = "그룹별 문해력 등급 분포")
 ```
 
 <P style = "page-break-before:always">
@@ -278,7 +280,8 @@ score_type <- marks %>%
   t %>%
   aggregate(list("유형" = type_kr), FUN = sum, na.rm = TRUE)
 score_type
-score_type <- aggregate(t(marks), list("유형" = type_kr), sum, na.rm = TRUE)
+score_type <- aggregate(t(marks), list("유형" = type_kr), 
+                        FUN = sum, na.rm = TRUE)
 score_type == 0
 score_type[score_type == 0] <- NA
 score_type_student <- score_type %>%
@@ -328,7 +331,8 @@ str(rate_item)
 rate_item %<>% 
   round(digits = 1) %>%
   as.matrix(nrow = 25)
-dimnames(rate_item) <- list("문항" =  paste0("문", 1:25), "정답률" = "정답률")
+dimnames(rate_item) <- list("문항" =  paste0("문", 1:25), 
+                            "정답률" = "정답률")
 ```
 
 <!--
@@ -341,10 +345,10 @@ pander(rate_item, digits = 3)
 
 ```{r, rates by types, echo = FALSE, eval = TRUE}
 rate_item_type <- data.frame("유형" = type_kr, "정답률" = rate_item)
-dimnames(rate_item_type) <- list("문항" = paste0("문", 1:25), "유형과 정답률" = c("유형", "정답률"))
+dimnames(rate_item_type) <- list("문항" = paste0("문", 1:25), "유형과 정답률" = c("유형", "정답률(%)"))
 rate_item_type %>%
   format(digits = 3, nsmall = 1) %>%
-  pander(align = c("l", "r"))
+  kable(align = c("l", "r"))
 ```
 
 <!--* `replace()`를 이용하면, 
@@ -366,7 +370,7 @@ marks.3
 rate_item %>%
   `[`(. <= 80, , drop = FALSE) %>%
   t %>%
-  pander
+  kable
 ```
 
 ##### 정답률 70% 이하
@@ -375,7 +379,7 @@ rate_item %>%
 rate_item %>%
   `[`(. <= 70, , drop = FALSE) %>%
   t %>%
-  pander
+  kable
 ```
 
 ##### 정답률 60% 이하
@@ -384,7 +388,7 @@ rate_item %>%
 rate_item %>%
   `[`(. <= 60, , drop = FALSE) %>%
   t %>%
-  pander
+  kable
 ```
 
 ##### 정답률 50% 이하
@@ -393,7 +397,7 @@ rate_item %>%
 rate_item %>%
   `[`(. <= 50, , drop = FALSE) %>%
   t %>%
-  pander
+  kable
 ```
 
 

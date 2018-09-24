@@ -226,10 +226,6 @@ score %>%
 `[`(Black & !is.na(score)) %>%
 ecdf %>%
 plot(add = TRUE)
-# score_red <- score[Red & !is.na(score)]
-# score_black <- score[Black & !is.na(score)]
-# plot(ecdf(score_red), xlim = range(c(score_red, score_black)), col = "red", main = "ECDF")
-# plot(ecdf(score_black), add = TRUE)
 ```
 
 <!--
@@ -334,12 +330,6 @@ rate_item %<>%
 dimnames(rate_item) <- list("문항" =  paste0("문", 1:25), 
                             "정답률" = "정답률")
 ```
-
-<!--
-```{r, correct answer rates, echo = FALSE, eval = TRUE}
-pander(rate_item, digits = 3)
-```
--->
 
 ##### 유형별 정답률
 

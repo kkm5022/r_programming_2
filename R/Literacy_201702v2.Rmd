@@ -53,7 +53,6 @@ literacy_roll$id == class_roll$id
 kable(literacy_roll)
 literacy <- literacy_roll[, c(2:27)] #> 문해력 집계에 필요한 변수만 추출. 
 kable(literacy)
-literacy_bak <- literacy
 ```
 
 <!--
@@ -276,17 +275,22 @@ score_type <- marks %>%
   t %>%
   aggregate(list("유형" = type_kr), FUN = sum, na.rm = TRUE)
 score_type
-score_type <- aggregate(t(marks), list("유형" = type_kr), 
-                        FUN = sum, na.rm = TRUE)
+# score_type <- aggregate(t(marks), list("유형" = type_kr), FUN = sum, na.rm = TRUE)
 score_type == 0
-score_type[score_type == 0] <- NA
+## `[<-`를 활용할 때 `value = `을 빠뜨리면 없다고 에러 발생.
+score_type %<>%
+  `[<-`(. == 0, value = NA) 
+# score_type[score_type == 0] <- NA
+score_type
 score_type_student <- score_type %>%
   `[`(-1) %>%
   t
-  t(score_type[, -1])
+# t(score_type[, -1])
 N <- nrow(literacy)
-dimnames(score_type_student) <- list(paste0("s", 1:N), 
-                                     paste0(levels(type_kr), c("(52점)", "(36점)", "(12점)")))
+score_type_student %<>%
+  `rownames<-`(paste0("s", 1:N)) %>%
+  `colnames<-`(paste0(levels(type_kr), c("(52점)", "(36점)", "(12점)")))
+# dimnames(score_type_student) <- list(paste0("s", 1:N), paste0(levels(type_kr), c("(52점)", "(36점)", "(12점)")))
 ```
 
 ```{r, scores by types, echo = FALSE, results = 'hide', eval = TRUE}
@@ -314,21 +318,22 @@ na_all <- marks_rw %>%
 -->
 
 ```{r, computing correct answer rates, echo = FALSE, results = 'hide', eval = TRUE}
-marks_2 <- marks_rw
-marks_2[is.na(marks_2)] <- "W"
-marks_2[na_all, ] <- NA
-marks_2 %<>% 
-  `==`("R") %>%
-  ifelse(1, 0)
+marks_2 <- marks_rw %>%
+  `[<-`(is.na(.), value = "W") %>%  #> NA는 모두 오답처리
+  `[<-`(na_all, , value = NA) %>%   #> 모든 문항이 오답이면 결석으로 간주하기 위하여 NA 부여
+# marks_2[is.na(marks_2)] <- "W"
+# marks_2[na_all, ] <- NA
+# marks_2 %<>% 
+  `==`("R") %>%                     #> 정답이면
+  ifelse(1, 0)                      #> 1, 그렇지 않으면 0점 (부분적 불참은 해당 문항만 0점) 
 rate_item <- marks_2 %>% 
   apply(MARGIN = 2, FUN = mean, na.rm = TRUE) %>%
-  `*`(100)
-str(rate_item)
-rate_item %<>% 
+  `*`(100) %>%
   round(digits = 1) %>%
-  as.matrix(nrow = 25)
-dimnames(rate_item) <- list("문항" =  paste0("문", 1:25), 
-                            "정답률" = "정답률")
+  as.matrix(nrow = 25) %>%
+  `rownames<-`(paste0("문", 1:25)) %>%
+  `colnames<-`("정답률")
+# dimnames(rate_item) <- list("문항" =  paste0("문", 1:25), "정답률" = "정답률")
 ```
 
 ##### 유형별 정답률

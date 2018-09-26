@@ -66,7 +66,7 @@ literacy_df <- literacy[1:25] %>%
 str(literacy_df)
 ```
 
-### barplot
+### Barplot
 
 막대그래프로 답안 분포를 시각적으로 살핀다. 차후 나오는 정답률과 함께 어느 문항에서 어느 답안을 많이 고르는지 파악하는 데 활용한다.
 
@@ -106,7 +106,7 @@ text(x = literacy_tbl[1, ] + literacy_tbl[2, ] + literacy_tbl[3, ] + literacy_tb
      labels = label_ptbl[4, ])
 ```
 
-#### 문해력 점수 계산
+### 문해력 점수 계산
 
 <!--* 정답 맞춰보기
     * 정답 읽어들이기. `what = ""`로 설정하여 `char`취급. 
@@ -125,7 +125,7 @@ ans <- "../data/literacy_ans.txt" %>%
 ans
 ```
 
-##### 정답과 대조하여 R(Right)/W(Wrong) 표시 
+#### 정답과 대조하여 R(Right)/W(Wrong) 표시 
     
 <!--* 채점표라는 의미의 `marks` 로 저장, (# 표시한 방식으로는 작동하지 않음)-->
     
@@ -138,7 +138,7 @@ marks_rw %>%
   pander
 ```
 
-##### 학생별 점수 산출
+#### 기초통계
 
 <!--+ 정답을 집계하기 위하여 "R" 갯수를 다시 산출하는 `ifelse()` 적용.
     + 4점씩 곱하면 100점 만점 기준의 점수가 됨. 
@@ -150,24 +150,61 @@ marks <- marks_rw %>%
   `==`("R") %>%
   ifelse(1, 0)
 score <- marks %>%
-  apply(MARGIN = 1, FUN = sum, na.rm = TRUE) %>%
+  apply(MARGIN = 1, 
+        FUN = sum, na.rm = TRUE) %>%
   `*`(4)
 score[score == 0] <- NA
 which(score < 60)
 ```
 
-```{r, pander score, echo = FALSE}
-pander(score)
+
+```{r, pander score, echo = FALSE, eval = TRUE}
+score %>%
+  summary
+```
+
+#### 점수대별 집계 테이블
+
+* I수준(24점 이하), II수준(28 ~ 48점), III수준(52 ~ 72점), IV수준(76점 이상)
+
+```{r, table, echo = FALSE, eval = TRUE}
+score %>%
+  cut(breaks = c(0, 24, 48, 72, 100), 
+      include.lowest = TRUE, right = TRUE) %>%
+  table(useNA = "ifany") %>%
+  pander
+```
+
+#### 등급별 집계 테이블 
+
+```{r, kevekwise table, echo = FALSE, eval = TRUE}
+score_f <- score %>%
+  cut(breaks = c(0, 24, 48, 72, 100), 
+      include.lowest = TRUE, right = TRUE) %>%
+  factor(levels = c("[0,24]", "(24,48]", "(48,72]", "(72,100]"), 
+         labels = c("I", "II", "III", "IV"), 
+         ordered = TRUE) 
+score_f %>%
+  table(useNA = "ifany") %>%
+  pander
 ```
 
 <P style = "page-break-before:always">
 
-##### Red and Black 비교
+#### Red and Black 비교
+
+##### 기초통계 비교
 
 ```{r, summary by group, echo = FALSE}
 score %>%
-  tapply(., literacy$group, FUN = { . %>% summary %>% round(digits = 1) }) %>%
+  tapply(., literacy$group, 
+         FUN = { . %>% summary %>% round(digits = 1) }) %>%
   pander
+```
+
+##### 줄기-잎 그림 총괄
+
+```{r, stem, echo = FALSE}
 # stem(score, scale = 2)
 score %>%
   stem(scale = 0.5)
@@ -176,6 +213,8 @@ Red <- literacy %$%
 Black <- literacy %$%
   `==`(group, "Black")
 ```
+
+##### 줄기-잎 그림 비교
 
 - Red
 
@@ -197,14 +236,14 @@ score %>%
 
 <!--#### Plots-->
 
-##### Box Plots
+##### Box Plot 비교
 
 ```{r, boxplots, echo = FALSE, fig.width = 6, fig.height = 6}
 score %>%
   plot(literacy$group, .)
 ```
 
-##### QQ plot
+##### QQ plot 비교
 
 ```{r, qqplots, echo = FALSE, fig.width = 6, fig.height = 6}
 qqplot(x = score[Red], y = score[Black], 
@@ -214,13 +253,14 @@ qqplot(x = score[Red], y = score[Black],
 
 <P style = "page-break-before:always">
 
-##### ECDF plot
+##### ECDF plot교 비교
 
 ```{r, ECDF, echo = FALSE, fig.width = 6, fig.height = 6, eval = TRUE}
 score %>%
 `[`(Red & !is.na(score)) %>%
 ecdf %>%
-plot(xlim = score %>% range(na.rm = TRUE), col = "red", main = "ECDF")
+plot(xlim = score %>% range(na.rm = TRUE), 
+     col = "red", main = "ECDF")
 score %>%
 `[`(Black & !is.na(score)) %>%
 ecdf %>%
@@ -231,24 +271,23 @@ plot(add = TRUE)
 <P style = "page-break-before:always">
 -->
 
-##### 문해력 등급 판정
-    
-* I수준(24점 이하), II수준(28 ~ 48점), III수준(52 ~ 72점), IV수준(76점 이상) 
-    
+#### 문해력 등급 분석
+
+모든 문항 NA => 결석. 일부 문항 NA => 오답 처리
+
 ```{r, literacy grade, echo = FALSE}
-grade <- ifelse(score <= 24, "I", ifelse(score <= 48, "II", ifelse(score <= 72, "III", "IV"))) %>%
-                  factor(levels = c("I", "II", "III", "IV"))
-grade_tbl <- grade %>%
+score_tbl <- score_f %>%
   table("문해력 등급 분포" = ., exclude = NULL) %>%
   c(., "계" = sum(.))
-names(grade_tbl)[5] <- "결석"
-grade_tbl %>%
+names(score_tbl)[5] <- "결석"
+score_tbl %>%
   t %>%
   kable(caption = "문해력 등급 분포")
-grade_tbl_group <- literacy %$%
-  table("Group" = .$group, "문해력 등급 분포" = grade, exclude = NULL)
-colnames(grade_tbl_group)[5] <- "결석"
-grade_tbl_group %>%
+score_tbl_group <- literacy %$%
+  table("Group" = .$group, 
+        "문해력 등급 분포" = score_f, exclude = NULL)
+colnames(score_tbl_group)[5] <- "결석"
+score_tbl_group %>%
   cbind(., "계" = rowSums(.)) %>%
   rbind(., "계" = colSums(.)) %>%
   kable(caption = "그룹별 문해력 등급 분포")
@@ -261,7 +300,8 @@ grade_tbl_group %>%
 ```{r, item by type, echo = FALSE}
 type_kr <- "../data/literacy_type.txt" %>%
   scan(what = "") %>%
-  factor(levels = c("a", "b", "c"), labels = c("사실적", "추론적", "비판적"))
+  factor(levels = c("a", "b", "c"), 
+         labels = c("사실적", "추론적", "비판적"))
 ```
 
 <!--* 유형별 점수 파악
@@ -273,7 +313,8 @@ type_kr <- "../data/literacy_type.txt" %>%
 ```{r, computing scores by types, echo = FALSE, results = 'hide', eval = TRUE}
 score_type <- marks %>%
   t %>%
-  aggregate(list("유형" = type_kr), FUN = sum, na.rm = TRUE)
+  aggregate(list("유형" = type_kr), 
+            FUN = sum, na.rm = TRUE)
 score_type
 # score_type <- aggregate(t(marks), list("유형" = type_kr), FUN = sum, na.rm = TRUE)
 score_type == 0
@@ -296,7 +337,7 @@ score_type_student %<>%
 ```{r, scores by types, echo = FALSE, results = 'hide', eval = TRUE}
 score_type_student %>%
   `*`(4) %>%
-  pander
+ kable
 ```
 
 <!--##### 문항별 정답률-->
@@ -327,7 +368,8 @@ marks_2 <- marks_rw %>%
   `==`("R") %>%                     #> 정답이면
   ifelse(1, 0)                      #> 1, 그렇지 않으면 0점 (부분적 불참은 해당 문항만 0점) 
 rate_item <- marks_2 %>% 
-  apply(MARGIN = 2, FUN = mean, na.rm = TRUE) %>%
+  apply(MARGIN = 2, 
+        FUN = mean, na.rm = TRUE) %>%
   `*`(100) %>%
   round(digits = 1) %>%
   as.matrix(nrow = 25) %>%

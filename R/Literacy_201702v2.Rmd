@@ -98,11 +98,15 @@ b <- barplot(matrix(literacy_tbl, nrow = 4),
              args.legend = list(x = 180, y = 25))
 # max(b)
 #literacy_tbl[1, ]
-text(x = literacy_tbl[1, ] / 2, y = b, labels = label_ptbl[1, ])
-text(x = literacy_tbl[1, ] + literacy_tbl[2, ] / 2 , y = b, labels = label_ptbl[2, ])
-text(x = literacy_tbl[1, ] + literacy_tbl[2, ] + literacy_tbl[3, ] / 2, y = b, 
+text(x = literacy_tbl[1, ] / 2, y = b, 
+     labels = label_ptbl[1, ])
+text(x = literacy_tbl[1, ] + literacy_tbl[2, ] / 2 , y = b, 
+     labels = label_ptbl[2, ])
+text(x = literacy_tbl[1, ] + literacy_tbl[2, ] + literacy_tbl[3, ] / 2, 
+     y = b, 
      labels = label_ptbl[3, ])
-text(x = literacy_tbl[1, ] + literacy_tbl[2, ] + literacy_tbl[3, ] + literacy_tbl[4, ]/ 2, y = b, 
+text(x = literacy_tbl[1, ] + literacy_tbl[2, ] + literacy_tbl[3, ] + literacy_tbl[4, ]/ 2, 
+     y = b, 
      labels = label_ptbl[4, ])
 ```
 
@@ -160,7 +164,8 @@ which(score < 60)
 
 ```{r, pander score, echo = FALSE, eval = TRUE}
 score %>%
-  summary
+  summary %>%
+  pander
 ```
 
 #### 점수대별 집계 테이블

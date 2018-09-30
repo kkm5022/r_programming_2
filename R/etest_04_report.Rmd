@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(xlsx)
 library(pander)
 library(knitr)
-library(readr)
+library(extrafont)
 panderOptions('table.split.table', Inf)
 options(width = 180)
 ```
@@ -50,8 +50,8 @@ str(quiz04)
 제출시간이 기록되지 않은 사람은 미제출.
 
 ```{r, echo = FALSE, results = "markup"}
-pander(table(quiz04$group, quiz04$submit))
-# pander(chisq.test(table(quiz04$group, quiz04$submit)))
+kable(table(quiz04$group, quiz04$submit))
+pander(chisq.test(table(quiz04$group, quiz04$submit)))
 ```
 
 ## 제출 시간의 분포
@@ -70,7 +70,7 @@ max(quiz04$hours, na.rm = TRUE)
 ### 일 단위 마감 시간으로부터 제출 시간의 분포
 
 ```{r, echo = FALSE}
-par(family = "HCR Dotum LVT")
+par(family = "Malgun Gothic")
 pander(table(cut(quiz04$days, breaks = c(0:8), include.lowest = TRUE)), caption = "일 단위")
 barplot(rev(table(cut(quiz04$days, breaks = c(0:8), include.lowest = TRUE))), 
         space = 0,
@@ -89,7 +89,7 @@ pander(table(cut(quiz04$hours, breaks = breaks, include.lowest = TRUE)), caption
 ### 시간 당 제출 건수의 분포
 
 ```{r, echo = FALSE, fig.width = 12}
-par(family = "HCR Dotum LVT")
+par(family = "Malgun Gothic")
 widths <- c(rep(c(18, 6), times = 8))
 freqs <- table(cut(quiz04$hours, breaks = breaks, include.lowest = TRUE))
 heights <- freqs / diff(breaks)
@@ -110,7 +110,7 @@ title(main = "시간당 퀴즈 제출 건수 분포")
 #### 랜덤화 효과
 
 ```{r, echo = FALSE}
-pander(table(quiz04$group, quiz04$bird))
+kable(table(quiz04$group, quiz04$bird))
 pander(chisq.test(table(quiz04$group, quiz04$bird)))
 ```
 
@@ -123,7 +123,7 @@ pander(tapply(quiz04$score1, quiz04$bird, summary))
 #### Box Plot
 
 ```{r, echo = FALSE}
-par(family = "HCR Dotum LVT")
+par(family = "Malgun Gothic")
 plot(score1 ~ bird, data = quiz04, 
      main = "급히 낸 사람과 일찍 낸 사람", 
      xlab = "제출 시점", ylab = "퀴즈 점수")
@@ -132,5 +132,5 @@ plot(score1 ~ bird, data = quiz04,
 #### t test
 
 ```{r, echo = FALSE}
-pander(t.test(score1 ~ bird, data = quiz04))
+t.test(score1 ~ bird, data = quiz04)
 ```

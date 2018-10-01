@@ -21,6 +21,7 @@ library(xlsx)
 library(pander)
 library(knitr)
 library(magrittr)
+library(extrafont)
 panderOptions('table.split.table', Inf)
 panderOptions('table.alignment.rownames', 'left')
 panderOptions('table.alignment.default', 'right')
@@ -73,7 +74,7 @@ str(literacy_df)
 
 ```{r, echo = FALSE, fig.width = 9, fig.height = 12}
 library(RColorBrewer)
-par(family = "", mar = c(5.1, 4.1, 4.1, 8.1))
+par(family = "Malgun Gothic", mar = c(5.1, 4.1, 4.1, 8.1))
 literacy_tbl <- literacy_df %>%
   sapply(FUN = table, useNA = "no")
 kable(literacy_tbl, caption = "Counts")
@@ -85,7 +86,8 @@ kable(literacy_ptbl, caption = "%")
 label_ptbl <- literacy_ptbl %>%
   format(digits = 2, nsmall = 0) %>%
   paste0("%") %>%
-  ifelse(. %in% c(" 0%", " 1%", " 2%"), "", .) %>%
+  ifelse(. %in% c(" 0%", " 1%", " 2%"), 
+         "", .) %>%
   matrix(nrow = 4)
 b <- barplot(matrix(literacy_tbl, nrow = 4), 
              horiz = TRUE, 

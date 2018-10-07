@@ -64,11 +64,11 @@ E_level_kr <- BFI_score %$%
 N_level_kr <- BFI_score %$%
   ifelse(.$N_score <= 4, "하", ifelse(.$N_score <= 6, "중하", ifelse(.$N_score <= 8, "중상", "상")))
 C_level_kr <- BFI_score %$%
-  ifelse(C_score <= 4, "하", ifelse(C_score <= 6, "중하", ifelse(C_score <= 8, "중상", "상")))
+  ifelse(.$C_score <= 4, "하", ifelse(.$C_score <= 6, "중하", ifelse(.$C_score <= 8, "중상", "상")))
 A_level_kr <-  BFI_score %$%
-  ifelse(A_score <= 10, "하", ifelse(A_score <= 12, "중하", ifelse(A_score <= 13, "중상", "상")))
+  ifelse(.$A_score <= 10, "하", ifelse(.$A_score <= 12, "중하", ifelse(.$A_score <= 13, "중상", "상")))
 O_level_kr <-  BFI_score %$%
-  ifelse(O_score <= 8, "하", ifelse(O_score <= 10, "중하", ifelse(O_score <= 12, "중상", "상")))
+  ifelse(.$O_score <= 8, "하", ifelse(.$O_score <= 10, "중하", ifelse(.$O_score <= 12, "중상", "상")))
 ```
 
 ordered factor 로 구성된 data frame 으로 정리
@@ -82,7 +82,7 @@ dimnames(BFI_level_kr) <- list(ID = BFI$ID, BFI_type_kr)
 kable(head(BFI_level_kr))
 ```
 
-위 과정은 다음과 같이 사용자 함수와 `mapply()` 또는 `sapply()`를 이용하여 다소 줄일 수도 있다.
+위 과정은 다음과 같이 사용자 함수와 `mapply()` 또는 `lapply()`를 이용하여 다소 줄일 수도 있다.
 
 ```{r, anonymous function}
 criteria <- function(x, a = c(4, 6, 8)){
@@ -144,14 +144,17 @@ kable(head(MI_score_kr))
 각 지능을 점수 순으로 배열, NA는 나중에 처리.
 
 ```{r, MI in order}
-(MI_na_id <- which(apply(MI_score_kr, 1, function(x)any(is.na(x)))))
+(MI_na_id <- which(apply(MI_score_kr, 1, function(x) any(is.na(x)))))
 (MI_ok_id <- setdiff(1:nrow(class_roll), MI_na_id))
 MI_score_kr_ok <- MI_score_kr[MI_ok_id, ]
-MI_order_kr <- apply(MI_score_kr_ok, 1, order, decreasing = TRUE)
+MI_order_kr <- apply(MI_score_kr_ok, 
+                     MARGIN = 1, 
+                     FUN = order, decreasing = TRUE)
 pander(head(t(MI_order_kr)))
 MI_sort_kr <- matrix(MI_names_kr[MI_order_kr], 
                      ncol = 8, byrow = TRUE, 
-                     dimnames = list(MI$ID[MI_ok_id], paste("제", 1:8, "순위", sep = "")))
+                     dimnames = list(MI$ID[MI_ok_id], 
+                                     paste0("제", 1:8, "순위")))
 kable(head(MI_sort_kr))
 ```
 
@@ -161,14 +164,14 @@ kable(head(MI_sort_kr))
 
 ```{r, sort}
 MI_sort_kr_2 <- data.frame(ID = MI$ID[MI_ok_id], MI_sort_kr, row.names = 1:nrow(MI_sort_kr))
-pander(head(MI_sort_kr_2))
+kable(head(MI_sort_kr_2))
 ```
 
 출석부에 통합
 
 ```{r, merge with class_roll}
 MI_sort_full_kr <- join(class_roll, MI_sort_kr_2, by = "ID")
-# MI_sort_full_kr$ID == BFI_full_kr$ID
+MI_sort_full_kr$ID == BFI_full_kr$ID
 MI_sort_full_kr <- MI_sort_full_kr[c(1, 3:10, 2)]
 kable(head(MI_sort_full_kr))
 ```

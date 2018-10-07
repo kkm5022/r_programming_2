@@ -30,7 +30,7 @@ BFI <- "../data/BFI.xlsx" %>%
             stringsAsFactors = FALSE)
 names(BFI) %<>%
   `[<-`(1, "ID")
-names(BFI)[1] <- "ID"
+# names(BFI)[1] <- "ID"
 BFI %<>%
   `names<-`(c("ID", "E1", "A1", "O1", "C1", "N1", "E2", "A2", "O2", "C2", "N2", "O3", "A3"))
 BFI$ID %<>%
@@ -51,12 +51,12 @@ MI %<>%
 # names(MI) <- c("ID", paste0("Q", 1:56))
 MI$ID %<>% 
   as.character
-lapply(list(1:15, c(1, 16:29), c(1, 30:43), c(1, 44:57)), 
-       function(x) kable(head(MI[x])))
 kable(head(MI[1:15]))
 kable(head(MI[c(1, 16:29)]))
 kable(head(MI[c(1, 30:43)]))
 kable(head(MI[c(1, 44:57)]))
+lapply(list(1:15, c(1, 16:29), c(1, 30:43), c(1, 44:57)), 
+       function(x) kable(head(MI[x])))
 ```
 
 ### Save Data

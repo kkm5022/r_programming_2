@@ -56,6 +56,8 @@ oxford[, c("ID", "Scores_M", "Scores",  "Diff", "Levels", "Duration_2", "Group")
   kable(align = c("c", "c", "c", "c", "r", "r", "c"), col.names = col_names)
 ```
 
+<P style = "page-break-before:always">
+
 ## 행복 점수 비교
 
 국문 설문지와 영문 설문지의 행복점수를 비교한다. 행복점수 단계별로 비교했을 때는 국문과 영문 설문지의 차이는 얼핏 보았을 때나 카이제곱 테스트로 검증하였을 때나 유의한 차이를 발견할 수 없는 데 평균 점수에 대해서 t-test를 수행한 결과는 통계적으로 유의하다고 나온다. 
@@ -96,9 +98,11 @@ boxplot(Scores ~ Group, data = oxford)
 ```
 -->
 
+<P style = "page-break-before:always">
+
 ### `geom_boxplot()`
 
-```{r, echo = FALSE, message = FALSE}
+```{r, echo = FALSE, message = FALSE, fig.width = 4.5, fig.height = 4.5}
 library(tidyverse)
 library(ggplot2)
 source("theme_kr.R")
@@ -116,6 +120,8 @@ ggplot(data = oxford,
 ```{r, echo = FALSE}
 t.test(Scores ~ Group, data = oxford, var.equal = FALSE) %>% pander
 ```
+
+<P style = "page-break-before:always">
 
 ## 소요시간 비교
 
@@ -141,7 +147,7 @@ boxplot(Duration ~ Group, data = oxford)
 
 ### `geom_boxplot()`
 
-```{r, echo = FALSE, message = FALSE}
+```{r, fig.width = 4.5, fig.height = 4.5, echo = FALSE, message = FALSE}
 ggplot(data = oxford, 
        mapping = aes(x = Group, y = Duration)) +
   geom_boxplot(outlier.shape = 1, na.rm = TRUE) +
@@ -157,13 +163,15 @@ ggplot(data = oxford,
 t.test(Duration ~ Group, data = oxford, var.equal = FALSE) %>% pander
 ```
 
+<P style = "page-break-before:always">
+
 ## Difference
 
 손으로 집계한 값과 컴퓨터로 집계한 값들을 산점도로 비교해 본다.
 
 ### `plot()`
 
-```{r, fig.width = 6.5, fig.height = 6.5, echo = FALSE, eval = TRUE}
+```{r, fig.width = 4.5, fig.height = 4.5, echo = FALSE, eval = TRUE}
 par(family = "HCR Dotum LVT")
 plot(Scores_M ~ Scores, 
      data = oxford, 
@@ -182,7 +190,7 @@ legend("topleft", inset = 0.05,
 
 ### `geom_point()`
 
-```{r, fig.width = 6, fig.height = 6, echo = FALSE, message = FALSE}
+```{r, fig.width = 4.5, fig.height = 4.5, echo = FALSE, message = FALSE}
 ggplot(data = oxford, 
        mapping = aes(x = Scores, y = Scores_M, colour = Group, shape = Group)) +
   geom_point(na.rm = TRUE) +
@@ -214,7 +222,7 @@ boxplot(Diff ~ Group, data = oxford)
 
 ### `geom_boxplot()`
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.width = 4.5, fig.height = 4.5}
 ggplot(data = oxford, 
        mapping = aes(x = Group, y = Diff)) +
   geom_boxplot(outlier.shape = 1, na.rm = TRUE) +
@@ -224,6 +232,7 @@ ggplot(data = oxford,
   scale_y_continuous(name = "차이")
 ```
 
+<P style = "page-break-before:always">
 
 ### 평균과 표준편차
 

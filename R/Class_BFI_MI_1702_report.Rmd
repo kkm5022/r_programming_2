@@ -58,7 +58,20 @@ kable(head(BFI_score_kr))
 
 점수에 따른 수준 판정
 
-```{r, criterion}
+```{r, criterion, eval = TRUE}
+E_level_kr <- BFI_score %$%
+  ifelse(E_score <= 4, "하", ifelse(E_score <= 6, "중하", ifelse(E_score <= 8, "중상", "상"))) 
+N_level_kr <- BFI_score %$%
+  ifelse(N_score <= 4, "하", ifelse(N_score <= 6, "중하", ifelse(N_score <= 8, "중상", "상")))
+C_level_kr <- BFI_score %$%
+  ifelse(C_score <= 4, "하", ifelse(C_score <= 6, "중하", ifelse(C_score <= 8, "중상", "상")))
+A_level_kr <-  BFI_score %$%
+  ifelse(A_score <= 10, "하", ifelse(A_score <= 12, "중하", ifelse(A_score <= 13, "중상", "상")))
+O_level_kr <-  BFI_score %$%
+  ifelse(O_score <= 8, "하", ifelse(O_score <= 10, "중하", ifelse(O_score <= 12, "중상", "상")))
+```
+
+```{r, criterion2, eval = FALSE}
 E_level_kr <- BFI_score %$%
   ifelse(.$E_score <= 4, "하", ifelse(.$E_score <= 6, "중하", ifelse(.$E_score <= 8, "중상", "상"))) 
 N_level_kr <- BFI_score %$%
@@ -70,7 +83,6 @@ A_level_kr <-  BFI_score %$%
 O_level_kr <-  BFI_score %$%
   ifelse(.$O_score <= 8, "하", ifelse(.$O_score <= 10, "중하", ifelse(.$O_score <= 12, "중상", "상")))
 ```
-
 ordered factor 로 구성된 data frame 으로 정리
 
 ```{r, ordered factor}

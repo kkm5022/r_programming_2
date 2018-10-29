@@ -31,13 +31,16 @@ oxford <- "../data/oxford_happiness180425.xlsx" %>%
             header = FALSE, 
             stringsAsFactors = FALSE)
 names(oxford) <- c("ID", paste0("Q", 1:29), "Scores_M", "Duration", "Group")
-oxford$Group %<>% factor(levels = c("Red", "Black"), 
-                         labels = c("국문", "영문"))
+oxford$Group %<>% 
+  factor(levels = c("Red", "Black"), 
+         labels = c("국문", "영문"))
 #> (역) 또는 (R) 항목은 7에서 뺀 점수로 
 oxford[, paste0("Q", c(1, 5, 6, 10, 13, 14, 24, 27:29))] %<>% 
   `-` (7, .)
-oxford$Scores <- oxford[ , 2:30] %>% apply(MARGIN = 1, FUN = function(x) sum(x) / 29)
-# oxford$Diff <- round(oxford$Scores_M - oxford$Scores, digits = 3)
+oxford$Scores <- oxford[ , 2:30] %>% 
+  apply(MARGIN = 1, FUN = {. %>% sum %>% `/`(29)})
+#  apply(MARGIN = 1, FUN = function(x) sum(x) / 29)
+#  oxford$Diff <- round(oxford$Scores_M - oxford$Scores, digits = 3)
 oxford$Diff <- oxford %$% 
   `-`(Scores_M, Scores) %>% 
   round(digits = 3)
@@ -73,7 +76,9 @@ oxford$Scores %>%
 ### `table()`
 
 ```{r, echo = FALSE}
-oxford_tbl <- oxford$Levels %>% table(oxford$Group, ., useNA = "ifany") %>% addmargins
+oxford_tbl <- oxford$Levels %>% 
+  table(oxford$Group, ., useNA = "ifany") %>% 
+  addmargins
 colnames(oxford_tbl)[6:7] <- c("결석", "계")
 rownames(oxford_tbl)[3] <-  "계"
 oxford_tbl %>% pander
@@ -118,7 +123,8 @@ ggplot(data = oxford,
 ### `t.test()` on means
 
 ```{r, echo = FALSE}
-t.test(Scores ~ Group, data = oxford, var.equal = FALSE) %>% pander
+t.test(Scores ~ Group, data = oxford, var.equal = FALSE) %>% 
+  pander
 ```
 
 <P style = "page-break-before:always">
@@ -265,7 +271,10 @@ oxford %$%
 ### `t.test()`
 
 ```{r, echo = FALSE}
-oxford %$% Diff %>% tapply(INDEX = oxford$Group, FUN = t.test) %>% pander
+oxford %$% 
+  Diff %>% 
+  tapply(INDEX = oxford$Group, FUN = t.test) %>% 
+  pander
 ```
 
 

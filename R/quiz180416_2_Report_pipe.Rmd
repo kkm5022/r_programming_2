@@ -13,6 +13,7 @@ library(magrittr)
 library(xlsx)
 library(pander)
 library(knitr)
+library(printr)
 panderOptions('table.split.table', Inf)
 panderOptions('table.alignment.rownames', 'left')
 panderOptions('table.alignment.default', 'right')
@@ -27,27 +28,37 @@ quiz0416_2 <-
             endRow = 182, 
             colIndex = 1:6, 
             colClasses = c(rep("character", 6)), 
+            encoding = "UTF-8",
             stringsAsFactors = FALSE)
-quiz0416_2 %>% str
+quiz0416_2 %>% 
+  str
 v_names <- c("id", "Q1", "Q2", "Q3", "Q4", "group")
-names(quiz0416_2) <- v_names
+quiz0416_2 %<>%
+  `names<-`(v_names)
+# names(quiz0416_2) <- v_names
 quiz0416_2
-quiz0416_2$group %<>% factor(levels = c("Red", "Black"))
-quiz0416_2$Q1 %<>% factor(levels = c("가", "나", "다", "라"), 
-                          labels = c("평균:100, 중위값:200", 
-                                     "평균:200, 중위값:100", 
-                                     "평균:1,000, 중위값:100", 
-                                     "평균:100, 중위값:1,000"))
-quiz0416_2$Q2 %<>% factor(levels = c("가", "나", "다", "라"), 
-                          labels = c("평균:100, 중위값:200", 
-                                     "평균:200, 중위값:100", 
-                                     "평균:1,000, 중위값:100", "평균:100, 중위값:1,000"))
+quiz0416_2$group %<>% 
+  factor(levels = c("Red", "Black"))
+quiz0416_2$Q1 %<>% 
+  factor(levels = c("가", "나", "다", "라"), 
+         labels = c("평균:100, 중위값:200", 
+                    "평균:200, 중위값:100", 
+                    "평균:1,000, 중위값:100", 
+                    "평균:100, 중위값:1,000"))
+quiz0416_2$Q2 %<>% 
+  factor(levels = c("가", "나", "다", "라"), 
+         labels = c("평균:100, 중위값:200", 
+                    "평균:200, 중위값:100", 
+                    "평균:1,000, 중위값:100", 
+                    "평균:100, 중위값:1,000"))
 # Q3.na <- setdiff(which(is.na(quiz0416_2$Q3)), which(is.na(quiz0416_2$Q4)))
 # quiz0416_2$Q3[Q3.na] <- "무응답"
-quiz0416_2$Q3 %<>% factor(levels = c("가", "나", "다", "라", "마", "무응답"), 
-                          labels = c("5%", "10%", "15%", "19.1%", "25%", "불참"))
+quiz0416_2$Q3 %<>% 
+  factor(levels = c("가", "나", "다", "라", "마", "무응답"), 
+         labels = c("5%", "10%", "15%", "19.1%", "25%", "불참"))
 #> 결석 인원이 일정치 않아 Q4에 어떤 값들이 있는지 `table(exclude = NULL)`로 파악.
-quiz0416_2$Q4 %>% table(exclude = NULL)
+quiz0416_2$Q4 %>% 
+  table(exclude = NULL)
 #> 몇번째에 이상한 `" "`가 있는 지 파악. 이 경우는 `Q3`에서는 `NA`가 아니면서 `Q4`에는 `NA`인 경우를 파악 (1교시와는 다른 경우임.) `setdiff()` 를 활용함.
 #> 하나라도 `NA`가 있는 일련번호 파악
 any_na <- quiz0416_2[, 2:5] %>%
@@ -63,13 +74,16 @@ odd_id <- setdiff(any_na, all_na)
 quiz0416_2$Q4[odd_id] <- "O"
 quiz0416_2$Q4 %>% 
   table(quiz0416_2$group, ., exclude = NULL)
-quiz0416_2$Q4 %<>% factor(level = c("O", "X"), 
-                          labels = c("있음", "없음"))
+quiz0416_2$Q4 %<>% 
+  factor(level = c("O", "X"), 
+         labels = c("있음", "없음"))
 quiz0416_2 %>% str
 ```
 
 ```{r, echo = FALSE, results = 'hide'}
-quiz0416_2 %>% summary %>% pander
+quiz0416_2 %>% 
+  summary %>% 
+  kable
 # pander(summary(quiz0416_2))
 ```
 
@@ -84,15 +98,20 @@ quiz0416_2 %>% summary %>% pander
 ```{r, echo = FALSE}
 tbl_q1_a <- quiz0416_2$Q1 %>% 
   table(quiz0416_2$group, ., useNA = "ifany") %>%
-  addmargins
+  cbind(., "계" = rowSums(.)) %>%
+  rbind(., "계" = colSums(.))
+# addmargins
 # colnames(tbl_q1_a)[5:6] <- c("결석", "계")
-colnames(tbl_q1_a)[5:6] %<>% `<-`(., c("결석", "계"))
+colnames(tbl_q1_a)[5] %<>% 
+  `<-`(., "결석")
 # rownames(tbl_q1_a)[3] <- "계"
-rownames(tbl_q1_a)[3] %<>% `<-`(., "계")
-tbl_q1_a %>% pander 
+rownames(tbl_q1_a)[3] %<>% 
+  `<-`(., "계")
+tbl_q1_a %>% 
+  kable 
 tbl_q1_a[-3, -4] %>% 
   chisq.test(simulate.p.value = TRUE) %>% 
-  pander
+  print
 ```
 
 ##### %
@@ -103,8 +122,9 @@ tbl_q1_a %>%
   prop.table %>% 
   c(., "계" = sum(.)) %>%
   `*`(100) %>%
+  t %>%
   format(digits = 2, nsmall = 1) %>%
-  pander
+  kable(align = "c")
 ```
 
 #### 평균과 중위값
@@ -120,11 +140,11 @@ tbl_q2_a <- quiz0416_2$Q2 %>%
   addmargins
 colnames(tbl_q2_a)[5:6] <- c("결석", "계")
 rownames(tbl_q2_a)[3] <- "계"
-tbl_q2_a %>% pander 
+tbl_q2_a %>% kable 
 tbl_q2_a %>%
   `[`(-3, -(5:6)) %>% 
   chisq.test(simulate.p.value = TRUE) %>%
-  pander
+  print
 ```
 
 ##### %
@@ -135,8 +155,9 @@ tbl_q2_a %>%
   prop.table %>%
   c(., "계" = sum(.)) %>%
   `*`(100) %>%
+  t %>%
   format(., digits = 2, nsmall = 1) %>%
-  pander
+  kable(align = "c")
 ```
 
 #### 연 500만원 이하 근로소득자의 비율
@@ -152,7 +173,7 @@ tbl_q3_a <- quiz0416_2$Q3 %>%
 colnames(tbl_q3_a)[6:8] <- c("불참", "결석", "계")
 rownames(tbl_q3_a)[3] <- "계"
 tbl_q3_a %>% 
-  pander
+  kable
 ```
 
 ##### %
@@ -163,8 +184,9 @@ tbl_q3_a %>%
   prop.table %>%
   c(., "계" = sum(.)) %>%
   `*`(100) %>%
+  t %>%
   format(digits = 2, nsmall = 1) %>%
-  pander
+  kable(align = "c")
 ```
 
 ### 디폴트 효과
@@ -188,11 +210,11 @@ tbl_q4_a <- quiz0416_2$Q4 %>%
 colnames(tbl_q4_a)[3:4] <- c("결석", "계")
 rownames(tbl_q4_a)[3] <- "계"
 tbl_q4_a %>% 
-  pander
+  kable
 tbl_q4_a %>%
   `[`(-3, -(3:4)) %>%
   chisq.test(simulate.p.value = FALSE) %>%
-  pander
+  print
 ```
 
 ##### % 비교 
@@ -204,7 +226,7 @@ tbl_q4_a %>%
   `*`(100) %>%
   cbind("계" = rowSums(.)) %>%
   format(digits = 2, nsmall = 1) %>%
-  pander
+  kable
 ```
 
 #### 합산(%)
@@ -216,7 +238,7 @@ tbl_q4_a %>%
   `*`(100) %>%
   cbind("계" = rowSums(.)) %>%
   format(digits = 2, nsmall = 1) %>%
-  pander
+  kable(row.names = FALSE, align = "c")
 ```
 
 ### Thinking, Fast and Slow

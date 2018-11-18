@@ -1,5 +1,5 @@
 ---
-title: "Quiz 180514"
+title: "Anchor Effects"
 author: "coop711"
 date: "`r Sys.Date()`"
 output: html_document
@@ -60,13 +60,15 @@ pander(summary(quiz0514))
 ```{r, echo = FALSE}
 tbl_q1_a <- quiz0514$Q1 %>% 
   table(quiz0514$group, ., useNA = "ifany") %>%
-  addmargins
-colnames(tbl_q1_a)[5:7] %<>% `<-`(., c("불참", "결석", "계"))
-rownames(tbl_q1_a)[3] %<>% `<-`(., "계")
+  cbind(., "계" = rowSums(.)) %>%
+  rbind(., "계" = colSums(.))
+#   addmargins  
+colnames(tbl_q1_a)[5:6] %<>% `<-`(., c("불참", "결석"))
+# rownames(tbl_q1_a)[3] %<>% `<-`(., "계")
 tbl_q1_a %>% pander 
-tbl_q1_a[-3, -(5:7)] %>% 
-  chisq.test(simulate.p.value = TRUE) %>% 
-  pander
+# tbl_q1_a[-3, -(5:7)] %>% 
+#   chisq.test(simulate.p.value = TRUE) %>% 
+#   pander
 ```
 
 ##### %
@@ -81,6 +83,8 @@ tbl_q1_a %>%
   pander
 ```
 
+<P style = "page-break-before:always">
+
 #### LM3
 
 `r knitr::include_graphics("../pics/Quiz171108_Q2.png", dpi = NA)`
@@ -89,17 +93,17 @@ tbl_q1_a %>%
 
 ```{r, LM3, echo = FALSE}
 tbl_q2_a <- quiz0514$Q2 %>%
-  table(quiz0514$group, .,
-        useNA = "ifany") %>%
-  addmargins
-colnames(tbl_q2_a)[5:7] <- c("불참", "결석", "계")
-rownames(tbl_q2_a)[3] <- "계"
-tbl_q2_a %>% pander 
+  table(quiz0514$group, ., useNA = "ifany") %>%
+  cbind(., "계" = rowSums(.)) %>%
+  rbind(., "계" = colSums(.))
+#   addmargins
+colnames(tbl_q2_a)[5:6] <- c("불참", "결석")
+tbl_q2_a %>% 
+  pander 
 tbl_q2_a %>%
   `[`(-3, -(5:7)) %>% 
   chisq.test(simulate.p.value = TRUE) %>%
   pander
-tbl.q2 <- table(quiz0514$group, quiz0514$Q2, useNA = "always")
 ```
 
 ##### %
@@ -114,6 +118,8 @@ tbl_q2_a %>%
   pander
 ```
 
+<P style = "page-break-before:always">
+
 #### 식량자급률
 
 `r knitr::include_graphics("../pics/Quiz171108_Q3.png", dpi = NA)`
@@ -123,9 +129,10 @@ tbl_q2_a %>%
 ```{r, echo = FALSE}
 tbl_q3_a <- quiz0514$Q3 %>%
   table(quiz0514$group, ., useNA = "ifany") %>%
-  addmargins
-colnames(tbl_q3_a)[5:7] <- c("불참", "결석", "계")
-rownames(tbl_q3_a)[3] <- "계"
+  cbind(., "계" = rowSums(.)) %>%
+  rbind(., "계" = colSums(.))
+#   addmargins
+colnames(tbl_q3_a)[5:6] <- c("불참", "결석")
 tbl_q3_a %>% 
   pander
 tbl_q3_a %>%
@@ -146,6 +153,8 @@ tbl_q3_a %>%
   pander
 ```
 
+<P style = "page-break-before:always">
+
 #### 국공립대 등록금 국제 비교
 
 ##### Red
@@ -163,8 +172,10 @@ tbl_q3_a %>%
 ```{r, college tuition, echo = FALSE}
 tbl_q4_a <- quiz0514$Q4 %>%
   table(quiz0514$group, ., useNA = "ifany") %>%
-  addmargins
-colnames(tbl_q4_a)[7:8] <- c("결석", "계")
+  cbind(., "계" = rowSums(.)) %>%
+  rbind(., "계" = colSums(.))
+#   addmargins
+colnames(tbl_q4_a)[7] <- "결석"
 rownames(tbl_q4_a) <- c("등록금무상국가 소개", "등록금고액국가 소개", "계")
 tbl_q4_a %>% 
   pander

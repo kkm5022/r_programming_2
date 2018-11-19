@@ -56,11 +56,13 @@ quiz0430_1 %>% summary %>% pander
 
 ### 소득 상위1%의 몫과 시대적 사건들
 
-`r knitr::include_graphics("../pics/Quiz171030_01.png", dpi = NA)`
+`r include_graphics("../pics/Quiz171030_01.png", dpi = NA)`
 
 ##### 대공황. 대번영, 대침체
 
 ```{r, times, echo = FALSE}
+# quiz0430_1 %$%
+#   table(.$group, .$Q1, useNA = "ifany")
 tbl_q1_a <- quiz0430_1$Q1 %>% 
   table(quiz0430_1$group, ., useNA = "ifany") %>%
   cbind(., "계" = rowSums(.)) %>%
@@ -79,19 +81,19 @@ tbl_q1_a %>%
 
 ```{r,times in percentage, echo = FALSE}
 tbl_q1_a %>% 
-  `[`(3, -(5:6)) %>%
+  `[`(3, -(5:6), drop = FALSE) %>%
   prop.table %>% 
-  c(., "계" = sum(.)) %>%
+  cbind(., "계" = rowSums(.)) %>%
   `*`(100) %>%
   format(digits = 2, nsmall = 1) %>%
-  pander
+  kable
 ```
 
 <P style = "page-break-before:always">
 
 ### Wilkinson
 
-`r knitr::include_graphics("../pics/Quiz171030_02.png", dpi = NA)`
+`r include_graphics("../pics/Quiz171030_02.png", dpi = NA)`
 
 ##### 소득불평등과 건강 및 사회문제 지표
 
@@ -119,8 +121,9 @@ tbl_q2_a %>%
   prop.table %>%
   c(., "계" = sum(.)) %>%
   `*`(100) %>%
+  t %>%
   format(., digits = 2, nsmall = 1) %>%
-  pander
+  kable
 ```
 
 ### 1944년 미국의 최고소득세율
@@ -165,7 +168,7 @@ tbl_q3_a %>%
 
 ##### Black
 
-`r knitr::include_graphics("../pics/Quiz171030_04_black.png", dpi = NA)`
+`r include_graphics("../pics/Quiz171030_04_black.png", dpi = NA)`
 
 ##### 이득은 완전히 하고, 손실은 피하고자 하는 경향 확인. Red는 이득을 완전히 확보하려는 게임(A)에, Black은 손실을 확률적으로 피하려는 게임(B)을 많이 선택.
 

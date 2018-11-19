@@ -26,6 +26,7 @@ quiz0514 <- "../data/quiz180514.xlsx" %>%
             endRow = 182, 
             colIndex = 1:6, 
             colClasses = c(rep("character", 6)), 
+            encoding = "UTF-8",
             stringsAsFactors = FALSE)
 quiz0514 %>% str
 names(quiz0514) <- c("id", "Q1", "Q2", "Q3", "Q4", "group")
@@ -45,8 +46,10 @@ quiz0514$Q4 %<>% factor(levels = c("가", "나", "다", "라", "마", "무응답
 quiz0514 %>% str
 ```
 
-```{r, randomization, echo = FALSE, results = 'hide'}
-pander(summary(quiz0514))
+```{r, echo = FALSE, results = 'hide'}
+quiz0514 %>%
+  summary %>%
+  pander
 ```
 
 ### 퀴즈 응답 비교
@@ -65,7 +68,8 @@ tbl_q1_a <- quiz0514$Q1 %>%
 #   addmargins  
 colnames(tbl_q1_a)[5:6] %<>% `<-`(., c("불참", "결석"))
 # rownames(tbl_q1_a)[3] %<>% `<-`(., "계")
-tbl_q1_a %>% pander 
+tbl_q1_a %>% 
+  kable
 # tbl_q1_a[-3, -(5:7)] %>% 
 #   chisq.test(simulate.p.value = TRUE) %>% 
 #   pander
@@ -75,12 +79,12 @@ tbl_q1_a %>% pander
 
 ```{r, productivity vs wage in percentage, echo = FALSE}
 tbl_q1_a %>% 
-  `[`(3, -(5:7)) %>%
+  `[`(3, -(5:7), drop = FALSE) %>%
   prop.table %>% 
-  c(., "계" = sum(.)) %>%
+  cbind(., "계" = rowSums(.)) %>%
   `*`(100) %>%
   format(digits = 2, nsmall = 1) %>%
-  pander
+  kable(align = "r")
 ```
 
 <P style = "page-break-before:always">
@@ -99,7 +103,7 @@ tbl_q2_a <- quiz0514$Q2 %>%
 #   addmargins
 colnames(tbl_q2_a)[5:6] <- c("불참", "결석")
 tbl_q2_a %>% 
-  pander 
+  kable 
 tbl_q2_a %>%
   `[`(-3, -(5:7)) %>% 
   chisq.test(simulate.p.value = TRUE) %>%
@@ -110,12 +114,12 @@ tbl_q2_a %>%
 
 ```{r, LM3 in percentage, echo = FALSE}
 tbl_q2_a %>%
-  `[`(3, -(5:7)) %>%
+  `[`(3, -(5:7), drop = FALSE) %>%
   prop.table %>%
-  c(., "계" = sum(.)) %>%
+  cbind(., "계" = rowSums(.)) %>%
   `*`(100) %>%
   format(., digits = 2, nsmall = 1) %>%
-  pander
+  kable(align = "r")
 ```
 
 <P style = "page-break-before:always">
@@ -134,7 +138,7 @@ tbl_q3_a <- quiz0514$Q3 %>%
 #   addmargins
 colnames(tbl_q3_a)[5:6] <- c("불참", "결석")
 tbl_q3_a %>% 
-  pander
+  kable
 tbl_q3_a %>%
   `[`(-3, 2:4) %>% 
   chisq.test(simulate.p.value = TRUE) %>%
@@ -145,12 +149,12 @@ tbl_q3_a %>%
 
 ```{r, echo = FALSE}
 tbl_q3_a %>%
-  `[`(3, -(5:7)) %>%
+  `[`(3, -(5:7), drop = FALSE) %>%
   prop.table %>%
-  c(., "계" = sum(.)) %>%
+  cbind(., "계" = rowSums(.)) %>%
   `*`(100) %>%
   format(digits = 2, nsmall = 1) %>%
-  pander
+  kable(align = "r")
 ```
 
 <P style = "page-break-before:always">
@@ -176,9 +180,9 @@ tbl_q4_a <- quiz0514$Q4 %>%
   rbind(., "계" = colSums(.))
 #   addmargins
 colnames(tbl_q4_a)[7] <- "결석"
-rownames(tbl_q4_a) <- c("등록금무상국가 소개", "등록금고액국가 소개", "계")
+rownames(tbl_q4_a) <- c("Red(등록금무상국가 소개)", "Black(등록금고액국가 소개)", "계")
 tbl_q4_a %>% 
-  pander
+  kable
 tbl_q4_a %>%
   `[`(-3, -(6:8)) %>%
   chisq.test(simulate.p.value = TRUE) %>%
@@ -194,8 +198,9 @@ tbl_q4_a %>%
   `*`(100) %>%
   cbind("계" = rowSums(.)) %>%
   format(digits = 2, nsmall = 1) %>%
-  pander
+  kable(align = "r")
 ```
+
 ##### 국공립대 등록금의 적정 수준 (%) 무상, 100만원 => 100만원 이하, 200만원, 500만원, 1,000만원 => 200만원 이상
 
 ```{r, college tuition in percentage 2, echo = FALSE}
@@ -209,7 +214,7 @@ quiz0514$Q4 %>%
   `*`(100) %>%
   cbind("계" = rowSums(.)) %>%
   format(digits = 2, nsmall = 1) %>%
-  pander
+  kable(align = "r")
 ```
 
 ```{r, save, echo = FALSE}

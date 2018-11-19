@@ -196,6 +196,21 @@ tbl_q4_a %>%
   format(digits = 2, nsmall = 1) %>%
   pander
 ```
+##### 국공립대 등록금의 적정 수준 (%) 무상, 100만원 => 100만원 이하, 200만원, 500만원, 1,000만원 => 200만원 이상
+
+```{r, college tuition in percentage 2, echo = FALSE}
+levels(quiz0514$Q4) <- list("100만원 이하" = c("무상", "100만원"), "200만원 이상" = c("200만원", "500만원", "1,000만원"))
+quiz0514$Q4 %>%
+  table(quiz0514$group, ., useNA = "ifany") %>%
+  cbind(., "계" = rowSums(.)) %>%
+  rbind(., "계" = colSums(.)) %>%
+  `[`(-3, -(3:4)) %>%
+  prop.table(margin = 1) %>%
+  `*`(100) %>%
+  cbind("계" = rowSums(.)) %>%
+  format(digits = 2, nsmall = 1) %>%
+  pander
+```
 
 ```{r, save, echo = FALSE}
 # save.image("../R/quiz0514.rda")

@@ -1,7 +1,6 @@
 .Rproj.user/**
 .Rhistory
 .RData
-data/*.xlsx
 R/*.RData
 R/*.html
 R/rsconnect/**

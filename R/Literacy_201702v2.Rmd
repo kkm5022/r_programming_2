@@ -21,6 +21,7 @@ library(xlsx)
 library(pander)
 library(knitr)
 library(magrittr)
+library(extrafont)
 panderOptions('table.split.table', Inf)
 panderOptions('table.alignment.rownames', 'left')
 panderOptions('table.alignment.default', 'right')
@@ -90,7 +91,8 @@ literacy_ptbl %>%
 label_ptbl <- literacy_ptbl %>%
   format(digits = 2, nsmall = 0) %>%
   paste0("%") %>%
-  ifelse(. %in% c(" 0%", " 1%", " 2%"), "", .) %>%
+  ifelse(. %in% c(" 0%", " 1%", " 2%"), 
+         "", .) %>%
   matrix(nrow = 4)
 ```
 

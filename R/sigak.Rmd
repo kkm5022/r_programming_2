@@ -1,0 +1,98 @@
+---
+title: "Untitled"
+author: "km"
+date: "2018년 10월 27일"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(ggplot2)
+```
+
+
+```{r, data}
+
+lung <-read.csv("./data/lung.csv",header=T,
+                        stringsAsFactors = FALSE)
+
+arm <- factor(ifelse(lung$LC %in% 'LungCancer',"폐암","정상"),
+              levels = c("폐암", "정상"))
+
+lungcancer <- lung$LC
+smoking <- lung$Smoking
+
+ggplot(data = lung, 
+       mapping = aes(x = lungcancer, y = smoking )) +
+  geom_point(na.rm = TRUE) +  ggtitle("흡연기간과 폐암여부 비교")
+
+
+boxplot(lung$Smoking ~ lung$LC, 
+        data = lung, 
+        main="흡연기간과 암발병 상자그림",
+        ylab= "흡연기간(년)")
+
+plot(arm, 
+     main = "폐암여부", 
+     ylab = "사람(명)")
+
+
+lung2 <-read.csv("./data/smoking.csv",header=T,
+                        stringsAsFactors = FALSE)
+
+can <-read.csv("./data/can.csv",header=T,
+                        stringsAsFactors = FALSE)
+
+
+#stringAsFactors로 문자를 숫자취급하지 않는다 (FALSE)
+
+
+arm <- factor(ifelse(lung$LC %in% 'LungCancer',"폐암","정상"),levels = c("폐암", "정상"))
+
+
+
+arm2 <- factor(ifelse(lung2$LC %in% 'LungCancer',"폐암","정상"),levels = c("폐암", "정상"))
+
+
+
+smk <- factor(ifelse(lung$Smoking %in% 'LungCancer',"폐암","정상"),levels = c("폐암", "정상"))
+
+
+
+#흡연기간과 폐암여부의 관련성을 보여주는 시각화
+
+
+smkcan <- lung[,c(1,4)] # 흡연기간과 폐암여부
+
+
+
+boxplot(lung$Smoking ~ lung$LC, data = lung, 
+        main="흡연기간과 암발병 상자그림",ylab= "흡연기간(년)")
+
+
+boxplot(lung$Age ~ lung$LC, data = lung, main="나이와 암발병 상자그림",ylab= "나이")
+
+
+
+
+
+#성별과 폐암여부의 관련성을 보여주는 시각화 
+gencan <- lung[,c(1,2)] # 성별과 폐암여부
+
+x <- table(gencan)
+
+plot(x,main = "성별과 폐암여부",col = "orange",type = "h")
+
+
+gencan <- lung[,c(1,2)] # 성별과 폐암여부
+
+x <- table(gencan)
+
+plot(x,main = "성별과 폐암여부",col = "orange",
+type = "h", ylim = c(0, max(x)), lwd = 2, 
+xlab = "폐암여부", ylab = "성별", frame.plot = is.num)
+
+
+
+```

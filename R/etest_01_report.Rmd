@@ -27,7 +27,8 @@ class_id_group0901 <- readRDS("./class_id_group180901.RDS")
 id0901 <- class_id_group0901$id
 class_id_group0907 <- readRDS("./class_id_group180907.RDS")
 id0907 <- class_id_group0907$id
-id_new <- setdiff(id0907, id0901)
+id_new <- setdiff(id0907, id0901) # 0907에서 0901을 뺀사람들 
+# 즉 1일에는 없었지만 7일에 새로 들어온 사람만 저장 
 quiz01 <- read.xlsx("../data/etest01.xlsx", 
                         sheetIndex = 1, 
                         startRow = 3, 
@@ -38,7 +39,10 @@ quiz01 <- read.xlsx("../data/etest01.xlsx",
                         stringsAsFactors = FALSE)
 names(quiz01) <- c("id", "score1", "score2", "time")
 quiz01$group <- class_id_group0907$group[match(quiz01$id, id0907)]
+#match 첫번째 매개변수가 두번째 매개변수의 몇번째에 포함되는지 나타냄
 quiz01$submit <- ifelse(is.na(quiz01$time), "미제출", "제출")
+#quiz01$submit %>% '==' (is.na(quiz01$time)) %>% ifelse("미제출","제출")
+#quiz01$submit <- (is.na(quiz01$time)) %>% ifelse("미제출","제출")
 quiz01$hours_passed <- as.numeric(difftime(Sys.time(), quiz01$time, units = 'days'))
 ## 학교 정보시스템이 GMT로 표기되어 있어서 9시간의 타임갭을 감안하여야 함.
 quiz01$days <- as.numeric(difftime("2018-09-10 09:00:00", quiz01$time, units = 'days'))
@@ -46,6 +50,8 @@ quiz01$hours <- as.numeric(difftime("2018-09-10 09:00:00", quiz01$time, units = 
 quiz01$bird <- factor(ifelse(quiz01$hours >= 6, "Early", "Late"), 
                       labels = c("마감날 오후6시 이전 제출", "마감날 오후6시 이후 제출"))
 quiz01$new <- factor(ifelse(quiz01$id %in% id_new, "new", "stay"), labels = c("변경", "고수"))
+#quiz01$new <- quiz01$id %in% id_new %>% ifelse("new", "stay")
+
 str(quiz01)
 ```
 ### 제출 시간
@@ -60,6 +66,7 @@ pander(head(quiz01[, c("score1", "time")], n = 10))
 
 ```{r, echo = FALSE, results = "markup"}
 kable(table(quiz01$group, quiz01$submit))
+#케이블은 표같이 점선을 만들어준다/테이블은 표를 만들어준다(케이블없어도 가능)
 ```
 
 ### 수강변경 여부와 제출/미제출
@@ -100,7 +107,7 @@ max(quiz01$hours, na.rm = TRUE)
 ### 일 단위 마감 시간으로부터 제출 시간의 분포
 
 ```{r, echo = FALSE}
-par(family = "Malgun Gothic")
+par(family = "")
 pander(table(cut(quiz01$days, breaks = c(0:7), 
                  include.lowest = TRUE)), caption = "일 단위")
 barplot(rev(table(cut(quiz01$days, breaks = c(0:7), include.lowest = TRUE))), 
@@ -119,7 +126,7 @@ pander(table(cut(quiz01$hours, breaks = breaks, include.lowest = TRUE)), caption
 ### 시간 당 제출 건수의 분포
 
 ```{r, echo = FALSE}
-par(family = "Malgun Gothic")
+par(family = "")
 widths <- c(rep(24, 6), 18, rep(1, 6))
 freqs <- table(cut(quiz01$hours, breaks = c(0:6, seq(24, 168, by = 24)), include.lowest = TRUE))
 heights <- freqs / diff(breaks)
@@ -151,7 +158,7 @@ pander(tapply(quiz01$score1, quiz01$bird, summary))
 #### Box Plot
 
 ```{r, echo = FALSE}
-par(family = "Malgun Gothic")
+par(family = "")
 plot(score1 ~ bird, data = quiz01, 
      main = "급히 낸 사람과 일찍 낸 사람", 
      xlab = "제출 시점", ylab = "퀴즈 점수")

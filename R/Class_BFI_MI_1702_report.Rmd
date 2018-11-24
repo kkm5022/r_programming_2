@@ -47,10 +47,13 @@ data frame으로 정리하고, 한글 명칭 부여
 BFI_data <- BFI[, -1]
 abb_BFI <- c("E", "N", "C", "A", "O")
 BFI_score <- data.frame(sapply(abb_BFI, function(x) apply(BFI_data[, substr(names(BFI_data), 1, 1) == x], 1, sum)))
+# data.frame은 칼럼을 붙여준다 
+# substr("김민규",1,2) => "김민" 첫번째부터 두번쨰까지 뽑는다
+# sapply 
 # BFI_score <- data.frame(mapply(function(x) apply(BFI_data[, substr(names(BFI_data), 1, 1) == x], 1, sum), abb_BFI))
 # BFI_score <- data.frame(E_score, N_score, C_score, A_score, O_score)
 names(BFI_score) <- c("E_score", "N_score", "C_score", "A_score", "O_score")
-BFI_type_kr <- c("외향성", "신경성", "성실성", "친화성", "개방성")
+BFI_type_kr <- c("외향성    ", "신경성    ", "성실성     ", "친화성      ", "개방성    ")
 BFI_score_kr <- BFI_score
 dimnames(BFI_score_kr) <- list(ID = BFI$ID, BFI_type_kr)
 kable(head(BFI_score_kr))
@@ -58,22 +61,11 @@ kable(head(BFI_score_kr))
 
 점수에 따른 수준 판정
 
-```{r, criterion, eval = TRUE}
-E_level_kr <- BFI_score %$%
-  ifelse(E_score <= 4, "하", ifelse(E_score <= 6, "중하", ifelse(E_score <= 8, "중상", "상"))) 
-N_level_kr <- BFI_score %$%
-  ifelse(N_score <= 4, "하", ifelse(N_score <= 6, "중하", ifelse(N_score <= 8, "중상", "상")))
-C_level_kr <- BFI_score %$%
-  ifelse(C_score <= 4, "하", ifelse(C_score <= 6, "중하", ifelse(C_score <= 8, "중상", "상")))
-A_level_kr <-  BFI_score %$%
-  ifelse(A_score <= 10, "하", ifelse(A_score <= 12, "중하", ifelse(A_score <= 13, "중상", "상")))
-O_level_kr <-  BFI_score %$%
-  ifelse(O_score <= 8, "하", ifelse(O_score <= 10, "중하", ifelse(O_score <= 12, "중상", "상")))
-```
-
-```{r, criterion2, eval = FALSE}
+```{r, criterion}
 E_level_kr <- BFI_score %$%
   ifelse(.$E_score <= 4, "하", ifelse(.$E_score <= 6, "중하", ifelse(.$E_score <= 8, "중상", "상"))) 
+#E_level_kr <- (ifelse(BFI_score$E_score <= 4, "하", ifelse(BFI_score$E_score <= 6, "중하", ifelse(BFI_score$E_score <= 8, "중상", "상")))) 
+
 N_level_kr <- BFI_score %$%
   ifelse(.$N_score <= 4, "하", ifelse(.$N_score <= 6, "중하", ifelse(.$N_score <= 8, "중상", "상")))
 C_level_kr <- BFI_score %$%
@@ -83,6 +75,7 @@ A_level_kr <-  BFI_score %$%
 O_level_kr <-  BFI_score %$%
   ifelse(.$O_score <= 8, "하", ifelse(.$O_score <= 10, "중하", ifelse(.$O_score <= 12, "중상", "상")))
 ```
+
 ordered factor 로 구성된 data frame 으로 정리
 
 ```{r, ordered factor}

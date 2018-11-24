@@ -1,7 +1,7 @@
 ---
 title: "Literacy 201702"
-# author: "coop711"
-# date: "`r Sys.Date()`"
+author: "20145106김경민"
+date: "`r Sys.Date()`"
 output: html_document
 ---
 
@@ -21,7 +21,6 @@ library(xlsx)
 library(pander)
 library(knitr)
 library(magrittr)
-library(extrafont)
 panderOptions('table.split.table', Inf)
 panderOptions('table.alignment.rownames', 'left')
 panderOptions('table.alignment.default', 'right')
@@ -31,13 +30,13 @@ options(width=180)
 
 
 ```{r, read data, echo = FALSE, results = 'hide'}
-literacy_roll <- read.xlsx("../data/literacy_1702.xlsx", 
+literacy_roll <- read.xlsx("./data/20180928ans.xlsx", 
                            sheetIndex = 1, 
-                           startRow = 3, 
-                           endRow  = 182, 
+                           startRow = 1, 
+                           endRow  = 25, 
                            colIndex = c(1:26), 
                            colClasses = c(rep("character", 26)), 
-                           header = FALSE, 
+                           header = T, 
                            stringsAsFactors = FALSE,
                            encoding = "UTF-8")
 names(literacy_roll) <- c("id", paste("Q", 1:25, sep = ""))
@@ -60,49 +59,33 @@ kable(literacy)
 ### `factor` 변환
 -->
 
-### Data
-
-```{r, echo = FALSE}
-literacy %>%
-  head %>%
-  kable
+```{r, echo = FALSE, results = "hide"}
 literacy_df <- literacy[1:25] %>%
   lapply(FUN = factor, levels = 1:4) %>%
   data.frame(row.names = NULL)
-literacy_df %>%
-  str
+str(literacy_df)
 ```
-
-### 답안분포
-
-막대그래프로 답안 분포를 시각적으로 살핀다. 차후 나오는 정답률과 함께 어느 문항에서 어느 답안을 많이 고르는지 파악하는 데 활용한다.
-
-```{r, echo = FALSE}
-literacy_tbl <- literacy_df %>%
-  sapply(FUN = table, useNA = "no")
-literacy_tbl %>%
-  kable(caption = "Counts")
-literacy_ptbl <- literacy_tbl %>%
-  apply(MARGIN = 2, FUN = prop.table) %>%
-  `*`(100) %>%
-  round(digits = 0)
-literacy_ptbl %>%
-  kable(caption = "%")
-label_ptbl <- literacy_ptbl %>%
-  format(digits = 2, nsmall = 0) %>%
-  paste0("%") %>%
-  ifelse(. %in% c(" 0%", " 1%", " 2%"), 
-         "", .) %>%
-  matrix(nrow = 4)
-```
-
-<P style = "page-break-before:always">
 
 ### Barplot
+
+막대그래프로 답안 분포를 시각적으로 살핀다. 차후 나오는 정답률과 함께 어느 문항에서 어느 답안을 많이 고르는지 파악하는 데 활용한다.
 
 ```{r, echo = FALSE, fig.width = 9, fig.height = 12}
 library(RColorBrewer)
 par(family = "", mar = c(5.1, 4.1, 4.1, 8.1))
+literacy_tbl <- literacy_df %>%
+  sapply(FUN = table, useNA = "no")
+kable(literacy_tbl, caption = "Counts")
+literacy_ptbl <- literacy_tbl %>%
+  apply(MARGIN = 2, FUN = prop.table) %>%
+  `*`(100) %>%
+  round(digits = 0)
+kable(literacy_ptbl, caption = "%")
+label_ptbl <- literacy_ptbl %>%
+  format(digits = 2, nsmall = 0) %>%
+  paste0("%") %>%
+  ifelse(. %in% c(" 0%", " 1%", " 2%"), "", .) %>%
+  matrix(nrow = 4)
 b <- barplot(matrix(literacy_tbl, nrow = 4), 
              horiz = TRUE, 
              axes = FALSE, 
@@ -115,11 +98,9 @@ b <- barplot(matrix(literacy_tbl, nrow = 4),
              args.legend = list(x = 180, y = 25))
 # max(b)
 #literacy_tbl[1, ]
-text(x = literacy_tbl[1, ] / 2, 
-     y = b, 
+text(x = literacy_tbl[1, ] / 2, y = b, 
      labels = label_ptbl[1, ])
-text(x = literacy_tbl[1, ] + literacy_tbl[2, ] / 2 , 
-     y = b, 
+text(x = literacy_tbl[1, ] + literacy_tbl[2, ] / 2 , y = b, 
      labels = label_ptbl[2, ])
 text(x = literacy_tbl[1, ] + literacy_tbl[2, ] + literacy_tbl[3, ] / 2, 
      y = b, 
@@ -128,8 +109,6 @@ text(x = literacy_tbl[1, ] + literacy_tbl[2, ] + literacy_tbl[3, ] + literacy_tb
      y = b, 
      labels = label_ptbl[4, ])
 ```
-
-<P style = "page-break-before:always">
 
 ### 문해력 점수 계산
 
@@ -159,7 +138,6 @@ marks_rw <- literacy_df %>%
   `==`(ans) %>%
   ifelse("R", "W") 
 marks_rw %>%
-  head(n = 20) %>%
   pander
 ```
 
@@ -215,109 +193,25 @@ score_f %>%
   pander
 ```
 
-<P style = "page-break-before:always">
 
-#### Red and Black 비교
 
-##### 기초통계 비교
 
-```{r, summary by group, echo = FALSE}
-score %>%
-  tapply(., literacy$group, 
-         FUN = { . %>% summary %>% round(digits = 1) }) %>%
-  pander
-```
 
-##### 줄기-잎 그림 총괄
-
-```{r, stem, echo = FALSE}
-# stem(score, scale = 2)
-score %>%
-  stem(scale = 0.5)
-Red <- literacy %$%
-  `==`(group, "Red")
-Black <- literacy %$%
-  `==`(group, "Black")
-```
-
-##### 줄기-잎 그림 비교
-
-- Red
-
-```{r, stem for Red, echo = FALSE}
-score %>%
-  `[`(literacy$group == "Red") %>%
-  stem(scale = 0.5)
-```
-
-- Black
-
-```{r, stem for Black, echo = FALSE}
-score %>%
-  `[`(literacy$group == "Black") %>%
-  stem(scale = 1)
-```
-
-<P style = "page-break-before:always">
 
 <!--#### Plots-->
 
-##### Box Plot 비교
 
-```{r, boxplots, echo = FALSE, fig.width = 6, fig.height = 6}
-score %>%
-  plot(literacy$group, .)
-```
 
-##### QQ plot 비교
 
-```{r, qqplots, echo = FALSE, fig.width = 6, fig.height = 6}
-qqplot(x = score[Red], y = score[Black], 
-       xlab = "Red", ylab = "Black", 
-       xlim = c(60, 100), ylim = c(60, 100))
-```
 
 <P style = "page-break-before:always">
 
-##### ECDF plot교 비교
-
-```{r, ECDF, echo = FALSE, fig.width = 6, fig.height = 6, eval = TRUE}
-score %>%
-`[`(Red & !is.na(score)) %>%
-ecdf %>%
-plot(xlim = score %>% range(na.rm = TRUE), 
-     col = "red", main = "ECDF")
-score %>%
-`[`(Black & !is.na(score)) %>%
-ecdf %>%
-plot(add = TRUE)
-```
 
 <!--
 <P style = "page-break-before:always">
 -->
 
-#### 문해력 등급 분석
 
-모든 문항 NA => 결석. 일부 문항 NA => 오답 처리, 계 추가
-
-```{r, literacy grade, echo = FALSE}
-score_tbl <- score_f %>%
-  table("문해력 등급 분포" = ., exclude = NULL) %>%
-  c(., "계" = sum(.))
-names(score_tbl)[5] <- "결석"
-score_tbl %>%
-  t %>%
-  kable(caption = "문해력 등급 분포")
-score_tbl_group <- literacy %$%
-  table("Group" = .$group, 
-        "문해력 등급 분포" = score_f, exclude = NULL)
-colnames(score_tbl_group)[5] <- "결석"
-score_tbl_group %>%
-  cbind(., "계" = rowSums(.)) %>%
-  rbind(., "계" = colSums(.)) %>%
-  kable(caption = "그룹별 문해력 등급 분포")
-```
 
 <P style = "page-break-before:always">
 
@@ -462,27 +356,5 @@ rate_item %>%
   t %>%
   kable
 ```
-
-#### 정답률이 낮은 문제들
-
-##### 문6.
-
-`r include_graphics("../pics/Q06.png")`
-
-##### 문9.
-
-`r include_graphics("../pics/Q09.png")`
-
-##### 문12.
-
-`r include_graphics("../pics/Q12.png")`
-
-##### 문17.
-
-`r include_graphics("../pics/Q17.png")`
-
-##### 문22.
-
-`r include_graphics("../pics/Q22.png")`
 
 

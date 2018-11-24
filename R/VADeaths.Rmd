@@ -1,7 +1,9 @@
 ---
 title: "VADeaths"
 author: "coop711"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -49,9 +51,14 @@ as.data.frame(as.table(VADeaths))
 
 혹은 한 번에
 
-
 ```{r, as.data.frame.table}
-as.data.frame.table(VADeaths)
+df <- as.data.frame.table(VADeaths)
+Place <- sapply(strsplit(as.character(df$Var2), split = " "), function(x) x[1])
+Gender <- sapply(strsplit(as.character(df$Var2), split = " "), function(x) x[2])
+data.frame(Age = ordered(df$Var1), 
+           Place = factor(Place), 
+           Gender = factor(Gender, levels = c("Male", "Female")), 
+           Rates = df$Freq)
 ```
 
 ## tidyverse를 이용한 방법 
@@ -61,6 +68,7 @@ as.data.frame.table(VADeaths)
 경고문의 `Conflicts ...`이하는  `R Base`에 있는 `filter()`나 `lag()`함수를 사용하려면 구체적으로 `stats::filter()` 나 `stats::lag()`라고 하여야 한다는 것을 의미한다.
 
 ```{r, tidyverse}
+
 library(tidyverse) # `tidyverse`를 검색 경로에 올려 놓음. 함께 불러들이는 패키지들과 경고문에 유의.
 VADeaths_tbl <- VADeaths %>% # 최종 결과물을 `tibble` 형식으로 지정.
   as_tibble() %>% # 행렬 구조를 `tibble`구조로 변환. `tbl_df()`는 더 이상 사용되지 않음. 
@@ -197,6 +205,8 @@ facet_grid(Gender ~ Place)
 
 ### `position = "identity"`
 
+y축 높이에 유의.
+
 ```{r}
 ggplot(data = VADeaths_df,
               mapping = aes(x = interaction(Place, Gender), 
@@ -214,11 +224,26 @@ ggplot(data = VADeaths_df,
 geom_bar(stat = "identity", 
          position = "identity")
 ```
+
+### `position = "stack"`
+
+`identity`로 했을 때와 y축 높이 비교
+
+```{r}
+ggplot(data = VADeaths_df,
+              mapping = aes(x = interaction(Place, Gender), 
+                            y = Rates, 
+                            fill = Age)) +
+geom_bar(stat = "identity", 
+         position = "stack")
+```
+
 ```{r}
 ggplot(data = VADeaths_df,
               mapping = aes(x = interaction(Place, Gender), 
                             y = rev(Rates), 
                             fill = Age)) +
 geom_bar(stat = "identity", 
-         position = position_stack())
+         position = "stack")
 ```
+

@@ -9,17 +9,23 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(knitr)
+library(xlsx)
 ```
 
 ### Data
 
 ```{r, data}
-class_roll <- read.table("./data/class_roll_masked.txt", 
-                         header = TRUE, 
-                         stringsAsFactors = FALSE, 
-                         encoding = "CP949")
-#stringAsFactors를 사용해서 글자를 숫자취급안하고 글자 그대로 취급!
-str(class_roll)
+
+class_roll <- read.xlsx("./data/응용R2분반.xlsx", 
+                        sheetIndex = 1, 
+                        startRow = 2, 
+                        endRow = 28, 
+                        colIndex = c(4,5,7,9), 
+                        colClasses = rep("character", 4), 
+                        encoding = "UTF-8", 
+                        stringsAsFactors = FALSE)
+
+names(class_roll) <- c("id", "name", "email", "cell_no")
 ```
 
 ### Randomization
@@ -27,16 +33,19 @@ str(class_roll)
 ```{r, randomization}
 set.seed(1)
 N <- nrow(class_roll) #class_roll의 케이스 갯수를 저장한다
-class_roll$group <- sample(1:N) %% 2 + 1
+class_roll$group <- sample(1:N) %% 7 + 1
 #2로 나눈 나머지 0또는1에 1을 더하면 1또는2가 나오게된다
 #즉 '1그룹'과 '2그룹'으로 나눈다
 class_roll$group <- factor(class_roll$group, 
-                           labels = c("Red", "Black"))
+                           labels = c("1team","2team","3team","4team","5team","6team","7team"))
+
 #class_roll의 그룹을 1= red 2=black으로 이름을 붙인다
-red_id <- which(class_roll$group == "Red")
+#red_id <- which(class_roll$group == "Red")
 #라벨이 red인 애들을 red_id로 정의해준다
-black_id <- which(class_roll$group == "Black")
+#black_id <- which(class_roll$group == "Black")
 #라벨이 black인 애들을 black_id로 정의해준다
+
+
 ```
 
 ### 학번
@@ -81,8 +90,9 @@ kable(table("odd_even" = odd.even, "Group"= class_roll$group))
 ```{r, e_mail}
 email_list <- strsplit(class_roll$email, "@", fixed = TRUE)
 #리스트 형식으로 저장된다
-mail_com <- sapply(email_list, `[`, 2)
 # @를 기준으로 잘랐을때 kkm5022 naver.com이면 2번째꺼를 뽑아라
+
+mail_com <- sapply(email_list, `[`, 2)
 kable(table("그룹" = class_roll$group,
             "e-mail" = mail_com))
 ```
@@ -94,7 +104,8 @@ f_name <- substring(class_roll$name,
                     first = 1, last = 1)
 #처음(성) 마지막(성) 처음이자 마지막 글자(첫번째글자만) 잘라서 저장한다
 kable(table("Group" = class_roll$group,
-            "Family Name" = f_name))
+            "Family Name" = f_name)) #안먹는다??
+#kable(table(class_roll$group,f_name))
 ```
 
 ### 많이 나오는 성씨
@@ -103,6 +114,9 @@ kable(table("Group" = class_roll$group,
 f_name_f <- factor(ifelse(f_name %in% c("김", "이", "박"), 
                           f_name, "기타"), 
                    levels = c("김", "이", "박", "기타"))
+
+
+# A %in% B A가 B안에 포함이 되는가?
 str(f_name_f)
 kable(table("Group" = class_roll$group, 
             "Family Name" = f_name_f))
@@ -123,16 +137,12 @@ hist(cell_numbers)
 chisq.test(table(cut(cell_numbers, 
                   labels = cut_label, 
                   breaks = seq(1000, 10000, by = 1000))))
+
+
+class_roll
 ```
 
-<!--
-### 학과
 
-```{r, departments}
-# kable(class_roll)
-kable(table("그룹" = class_roll$group, "학과" = class_roll$dept))
-```
--->
 
 ### 출석부에서 8명 비복원 랜덤 표집
 
@@ -146,6 +156,8 @@ kable(class_roll[sample(1:N, size = 8), ])
 -->
 
 ### `set.seed()` 의 용법
+난수를 뽑았을 때 그 난수가 바뀌지 않도록 저장하는것
+예를 들면 set.seed(1)이면 1번사물함에 난수를 저장한다
 
 `set.seed()`를 이용하면 랜덤넘버에 의존하는 실험을 재현할 수 있다. 
 다음 코드를 반복 수행하거나 다른 사람들의 수행결과와 비교해 보라.
@@ -161,14 +173,17 @@ sample(1:6, size = 2)
  세 번의 수행 결과가 똑같이 반복되는 경우
 
 ```{r}
-set.seed(1)
+set.seed(1) # 1번사물함에 3개의 난수를 저장 
+sample(1:6, size = 2)
+sample(1:6, size = 2)
+sample(1:6, size = 2) 
+set.seed(1) #1번사물함에 저장한 난수를 불러온다 
 sample(1:6, size = 2)
 sample(1:6, size = 2)
 sample(1:6, size = 2)
-set.seed(1)
-sample(1:6, size = 2)
-sample(1:6, size = 2)
-sample(1:6, size = 2)
+
+#sample() 비복원추출, 복원추출 둘다 가능
+sample(1:6, size = 2, replace = T) #복원추출
 ```
 
 동일한 결과를 반복적으로 얻는 경우

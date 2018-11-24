@@ -21,7 +21,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r, echo = FALSE, message = FALSE}
 library(xlsx)
 library(magrittr)
-library(extrafont)
 options(width = 180)
 oxford <- "../data/oxford_happiness180425.xlsx" %>% 
   read.xlsx(sheetIndex = 1, 
@@ -77,35 +76,22 @@ oxford$Scores %>%
 ### `table()`
 
 ```{r, echo = FALSE}
-oxford_tbl <- oxford %$%
-  table(.$Group, .$Levels, useNA = "ifany") %>% 
-  cbind(., "계" = rowSums(.)) %>%
-  rbind(., "게" = colSums(.))
-# oxford_tbl <- oxford$Levels %>% 
-#   table(oxford$Group, ., useNA = "ifany") %>% 
-#   cbind(., "계" = rowSums(.)) %>%
-#   rbind(., "게" = colSums(.))
-colnames(oxford_tbl)[6] <- "결석"
-# rownames(oxford_tbl)[3] <-  "계"
-oxford_tbl %>% 
-  kable
+oxford_tbl <- oxford$Levels %>% 
+  table(oxford$Group, ., useNA = "ifany") %>% 
+  addmargins
+colnames(oxford_tbl)[6:7] <- c("결석", "계")
+rownames(oxford_tbl)[3] <-  "계"
+oxford_tbl %>% pander
 oxford_tbl %>% 
   `[`(-3, -c(1, 6:7)) %>% 
-  chisq.test(simulate.p.value = TRUE)
-#> `drop = FALSE` 가 왜 필요한지 생각해 볼 것.
-oxford_tbl[3, -(6:7), drop = FALSE] %>%  
+  chisq.test(simulate.p.value = TRUE) %>%
+  pander
+oxford_tbl[3, -(6:7)] %>%  
   prop.table %>% 
   `*`(100) %>% 
-  cbind(., "계" = rowSums(.)) %>%
+  c(., "계" = sum(.)) %>%
   format(digits = 1, nsmall = 1) %>% 
-  kable
-# oxford_tbl[3, -(6:7)] %>%  
-#   prop.table %>% 
-#   `*`(100) %>% 
-#   c(., "계" = sum(.)) %>%
-#   t %>%
-#   format(digits = 1, nsmall = 1) %>% 
-#   kable
+  pander
 ```
 
 <!--
@@ -124,7 +110,7 @@ boxplot(Scores ~ Group, data = oxford)
 ```{r, echo = FALSE, message = FALSE, fig.width = 4.5, fig.height = 4.5}
 library(tidyverse)
 library(ggplot2)
-source("theme_kr_Malgun.R")
+source("theme_kr.R")
 ggplot(data = oxford, 
        mapping = aes(x = Group, y = Scores)) +
   geom_boxplot(outlier.shape = 1, na.rm = TRUE) +
@@ -137,7 +123,8 @@ ggplot(data = oxford,
 ### `t.test()` on means
 
 ```{r, echo = FALSE}
-t.test(Scores ~ Group, data = oxford, var.equal = FALSE) 
+t.test(Scores ~ Group, data = oxford, var.equal = FALSE) %>% 
+  pander
 ```
 
 <P style = "page-break-before:always">
@@ -179,7 +166,7 @@ ggplot(data = oxford,
 ### `t.test()` on means
 
 ```{r, echo = FALSE}
-t.test(Duration ~ Group, data = oxford, var.equal = FALSE)
+t.test(Duration ~ Group, data = oxford, var.equal = FALSE) %>% pander
 ```
 
 <P style = "page-break-before:always">
@@ -191,7 +178,7 @@ t.test(Duration ~ Group, data = oxford, var.equal = FALSE)
 ### `plot()`
 
 ```{r, fig.width = 4.5, fig.height = 4.5, echo = FALSE, eval = TRUE}
-par(family = "Malgun Gothic")
+par(family = "HCR Dotum LVT")
 plot(Scores_M ~ Scores, 
      data = oxford, 
      col = 3 - as.numeric(Group), 
@@ -267,7 +254,8 @@ ggplot(data = oxford,
 oxford %$% 
   Diff %>%
   tapply(INDEX = oxford$Group, FUN = mean, na.rm = TRUE) %>% 
-  round(3) 
+  round(3) %>% 
+  pander(caption = "Means")
 ```
 
 ### 표본 표준편차
@@ -276,7 +264,8 @@ oxford %$%
 oxford %$% 
   Diff %>% 
   tapply(INDEX = oxford$Group, FUN = sd, na.rm = TRUE) %>% 
-  round(3) 
+  round(3) %>% 
+  pander(caption = "SD")
 ```
 
 ### `t.test()`

@@ -1,0 +1,67 @@
+---
+title: "Word Cloud"
+author: "km"
+date: "2018년 10월 27일"
+output: html_document
+---
+```{r, data}
+install.packages("KoNLP")      #KoNLP 패키지 설치
+install.packages("wordcloud")  #wordcloud 패키지 설치
+library(KoNLP)                 #KoNLP 패키지 불러오기
+library(wordcloud)             #wordcloud 패키지 불러오기
+library(RColorBrewer)          #RColorBrewer 패키지 불러오기
+useSejongDic()                 #한글 사전 사용
+
+data1 <- readLines("./data/yunsul.txt") #연설문 텍스트 파일 읽어서 저장
+data2 <- sapply(data1, extractNoun, USE.NAMES=F) #data1 명사만 data2에 저장
+data3 <- unlist(data2) #필터링을 위해 unlist
+data3 <- Filter(function(x) {nchar(x) >= 2}, data3) #두글자 이상 단어만 data3에 저장
+data3 <- gsub("\\d+", "", data3) #숫자제거
+data3 <- gsub("\\(", "", data3) #(제거
+data3 <- gsub("\\)", "", data3) #)제거
+data3 <- gsub("[A-Za-z]", "", data3) #영문제거
+data3 <- gsub("하게", "", data3) #`하게`라는 단어가 나와서 제거해줌
+write(unlist(data3), "yunsul.txt") #data3을 다시저자
+data4 <- read.table("yunsul.txt") #읽어서 data4에 넣어줌
+wordcount <- table(data4) #단어 카운트를 해준다
+palete <- brewer.pal(5, "Set1") #글자색 수를 5개로 
+wordcloud(names(wordcount), freq=wordcount, scale=c(5, 1), rot.per=0.25,min.freq=1,random.order=F, random.color=T, colors=palete) #워드클라우드 생성
+savePlot("dd.png", type="png")
+
+
+
+
+
+install.packages("wordcloud2")
+
+library(wordcloud2)
+
+library(stringr)
+
+doc <- readLines('yunsul.txt')
+
+words <- SimplePos09(doc)
+
+extracted <- str_match(words, '([가-힣]+)/[NPM]')
+
+keyword <- extracted[,2]
+nouns <- keyword[!is.na(keyword)]
+
+nouns <- unlist(nouns)
+nouns <- Filter(function(x){nchar(x)>1},nouns)
+
+wordcount <- table(nouns)
+
+wordorder <- order(wordcount, decreasing = T)
+for (i in 1 : length(wordorder)){
+  if(wordcount[wordorder[i]] == 1){
+    break;
+   }
+}
+freqwords <- wordcount[wordorder[1:i-1]]
+
+wc <- wordcloud2(data=freqwords, size = 0.5, color = "random-light", rotateRatio = 0.75)
+
+
+
+```
